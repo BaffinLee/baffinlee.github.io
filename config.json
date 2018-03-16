@@ -39,7 +39,8 @@
   "theme": {
     "name": "default",
     "config": {
-      "github": "https://github.com/baffinlee"
+      "github": "https://github.com/baffinlee",
+      "gaId": "UA-115892357-1"
     }
   }
 }

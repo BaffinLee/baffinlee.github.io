@@ -1059,3 +1059,9 @@ a.link:hover {
     line-height: 34px;
   }
 }
+
+@media screen and (min-width: 651px) {
+  .header .nav {
+    display: block!important;
+  }
+}

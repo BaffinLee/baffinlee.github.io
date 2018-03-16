@@ -1,7 +1,7 @@
 <!--
 {
   "id": "Sk1ri-KKM",
-  "title": "about",
+  "title": "关于",
   "slug": "about",
   "comments": false,
   "createdAt": "2018-03-16 17:15:34",
