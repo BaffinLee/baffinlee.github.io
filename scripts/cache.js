@@ -51,9 +51,9 @@ module.exports = class Cache {
     this.data.idMap[config.id] = config
   }
 
-  updatePost (id, config) {
-    const post = this.data.idMap[id]
-    if (!post) throw new Error(`there is no this post id: ${id}`)
+  updatePost (config) {
+    const post = this.data.idMap[config.id]
+    if (!post) throw new Error(`there is no this post id: ${config.id}`)
     Object.keys(config).forEach(key => {
       post[key] = config[key]
     })
