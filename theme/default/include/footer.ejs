@@ -1,0 +1,18 @@
+    </div>
+  </main>
+  <footer class="footer" id="footer">
+    <div class="container clearfix">
+      <div class="copyright">&copy; 2018 Baffin Lee.</div>
+      <div class="social">
+        <a class="link" href="<%= app.config.theme.config.github %>" target="_blank">GitHub</a>
+        <a class="link" href="<%= app.url.rss() %>" target="_blank">RSS</a>
+      </div>
+    </div>
+    <div id="return-top" class="return-top">
+      <a class="link" href="#header"><i class="iconfont icon-top"></i></a>
+    </div>
+  </footer>
+  <%_ app.config.inject.body -%>
+  <script src="<%= app.url.static('js/app.js') %>"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# system files
+.DS_Store
+
+# npm files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# editor files
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# cache
+.cache
+
+# generated
+public
+
+# images
+images

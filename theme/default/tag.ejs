@@ -1,0 +1,16 @@
+<%- include('include/header') -%>
+    <div class="site-tags">
+      <h2><%= app.tag.name %><span> - 标签</span></h2>
+      <ul>
+        <% app.list.forEach(post => { %><li>
+          <span class="date"><%= app.moment(post.publishedAt).format('YYYY-MM-DD') %></span>
+          <a href="<%= app.url.post(post) %>"><%= post.title %></a>
+        </li><% }) %>
+      </ul>
+    </div>
+    <%- include('include/paging', {
+      pagingUrl (page = 0) {
+        return app.url.tags(app.tag.slug, page)
+      }
+    }) -%>
+<%- include('include/footer') -%>

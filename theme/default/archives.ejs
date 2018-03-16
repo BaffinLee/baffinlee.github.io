@@ -1,0 +1,16 @@
+<%- include('include/header') -%>
+    <div class="site-tags">
+      <% Object.entries(app.list).forEach(([year, list]) => { %><h2><%= year %></h2>
+      <ul>
+        <% list.forEach(post => { %><li>
+          <span class="date"><%= app.moment(post.publishedAt).format('MM-DD') %></span>
+          <a href="<%= app.url.post(post) %>"><%= post.title %></a>
+        </li><% }) %>
+      </ul><% }) %>
+    </div>
+    <%- include('include/paging', {
+      pagingUrl (page = 0) {
+        return app.url.archives(page)
+      }
+    }) -%>
+<%- include('include/footer') -%>

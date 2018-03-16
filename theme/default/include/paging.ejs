@@ -1,0 +1,35 @@
+    <% if (app.paging.pageCount > 1) { %><ul class="paging clearfix">
+      <% if (app.paging.pageNow > 1) { %><li class="prev">
+        <a href="<%= app.pagingUrl(app.paging.pageNow - 1) %>">
+          <i class="iconfont icon-left"></i>
+        </a>
+      </li><% } %>
+      <% if (app.paging.pageNow > 1) { %><li>
+        <a href="<%= app.pagingUrl(1) %>">1</a>
+      </li><% } %>
+      <% if (app.paging.pageNow > 4) { %><li class="dot">·</li><% } %>
+      <% if (app.paging.pageNow === 4) { %><li>
+        <a href="<%= app.pagingUrl(2) %>">2</a>
+      </li><% } %>
+      <% if (app.paging.pageNow > 2) { %><li>
+        <a href="<%= app.pagingUrl(app.paging.pageNow - 1) %>"><%= app.paging.pageNow - 1 %></a>
+      </li><% } %>
+      <li class="now">
+        <a href="<%= app.pagingUrl(app.paging.pageNow) %>"><%= app.paging.pageNow %></a>
+      </li>
+      <% if (app.paging.pageCount - app.paging.pageNow > 1) { %><li>
+        <a href="<%= app.pagingUrl(app.paging.pageNow + 1) %>"><%= app.paging.pageNow + 1 %></a>
+      </li><% } %>
+      <% if (app.paging.pageCount - app.paging.pageNow === 3) { %><li>
+        <a href="<%= app.pagingUrl(app.paging.pageNow + 2) %>"><%= app.paging.pageNow + 2 %></a>
+      </li><% } %>
+      <% if (app.paging.pageCount - app.paging.pageNow > 3) { %><li class="dot">·</li><% } %>
+      <% if (app.paging.pageNow < app.paging.pageCount) { %><li>
+        <a href="<%= app.pagingUrl(app.paging.pageCount) %>"><%= app.paging.pageCount %></a>
+      </li><% } %>
+      <% if (app.paging.pageNow < app.paging.pageCount) { %><li class="next">
+        <a href="<%= app.pagingUrl(app.paging.pageNow + 1) %>">
+            <i class="iconfont icon-right"></i>
+        </a>
+      </li><% } %>
+    </ul><% } %>

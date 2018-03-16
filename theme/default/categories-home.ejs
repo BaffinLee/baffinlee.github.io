@@ -1,0 +1,25 @@
+<%- include('include/header') -%>
+    <div class="site-tags">
+      <h2>分类</h2>
+      <ul>
+        <% app.list.forEach(category => { %><li>
+          <a href="<%= app.url.categories(category.slug) %>"><%= category.name %></a>
+          <% if (category.childrens && category.childrens.length) { %><ul>
+            <% category.childrens.forEach(two => { %><li>
+              <a href="<%= app.url.categories(two.slug) %>"><%= two.name %></a>
+              <% if (two.childrens && two.childrens.length) { %><ul>
+                <% two.childrens.forEach(three => { %><li>
+                  <a href="<%= app.url.categories(three.slug) %>"><%= three.name %></a>
+                </li><% }) %>
+              </ul><% } %>
+            </li><% }) %>
+          </ul><% } %>
+        </li><% }) %>
+      </ul>
+    </div>
+    <%- include('include/paging', {
+      pagingUrl (page = 0) {
+        return app.url.categories('', page)
+      }
+    }) -%>
+<%- include('include/footer') -%>

@@ -1,0 +1,15 @@
+<%- include('include/header') -%>
+    <div class="site-tags">
+      <h2>标签</h2>
+      <ul>
+        <% app.list.forEach(tag => { %><li>
+          <a href="<%= app.url.tags(tag.slug) %>"><%= tag.name %></a>
+        </li><% }) %>
+      </ul>
+    </div>
+    <%- include('include/paging', {
+      pagingUrl (page = 0) {
+        return app.url.tags('', page)
+      }
+    }) -%>
+<%- include('include/footer') -%>

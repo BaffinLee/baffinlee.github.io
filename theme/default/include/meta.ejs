@@ -1,0 +1,22 @@
+    <div class="meta">
+      <div>
+        <i class="iconfont icon-date"></i>
+        <span><%= app.moment(app.post.publishedAt).format('YYYY-MM-DD') %></span>
+      </div>
+      <% if (app.post.categories.length) { %><div>
+        <i class="iconfont icon-folder"></i>
+        <% app.post.categories.forEach(category => { %>
+        <a class="link" href="<%= app.url.categories(category.slug) %>"><%= category.name %></a>
+        <% }) %>
+      </div><% } %>
+      <% if (app.post.tags.length) { %><div>
+        <i class="iconfont icon-tag"></i>
+        <% app.post.tags.forEach(tag => { %>
+        <a class="link" href="<%= app.url.tags(tag.slug) %>"><%= tag.name %></a>
+        <% }) %>
+      </div><% } %>
+      <% if (app.post.series) { %><div>
+        <i class="iconfont icon-series"></i>
+        <a class="link" href="<%= app.url.series(app.post.series.slug) %>"><%= app.post.series.name %></a>
+      </div><% } %>
+    </div>

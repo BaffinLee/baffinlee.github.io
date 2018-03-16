@@ -1,0 +1,15 @@
+<%- include('include/header') -%>
+    <% app.list.forEach(post => { %><article class="post">
+      <a class="link title" href="<%= app.url.post(post) %>"><%= post.title %></a>
+      <%- include('include/meta', { post }) -%>
+      <div class="markdown-body">
+        <%- post.excerpt -%>
+      </div>
+      <a class="read-more link" href="<%= app.url.post(post) %>">阅读更多&gt;&gt;</a>
+    </article><% }) %>
+    <%- include('include/paging', {
+      pagingUrl (page = 0) {
+        return app.url.home(page)
+      }
+    }) -%>
+<%- include('include/footer') -%>

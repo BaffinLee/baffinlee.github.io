@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "site": {
+    "name": "Baffin Lee",
+    "title": "Baffin Lee's blog",
+    "url": "https://baffinlee.com",
+    "description": "Baffin lee的博客，分享技术文章",
+    "keywords": "Baffin lee, 前端, JavaScript, 编程",
+    "favicon": "img/favicon.ico",
+    "logo": "img/logo.png",
+    "slogan": "Happy Hacking."
+  },
+	"output": {
+		"public": "public",
+		"static": "static",
+		"posts": "posts",
+    "tags": "tags",
+    "authors": "authors",
+		"categories": "categories",
+		"series": "series",
+    "archives": "archives",
+    "page": "page"
+	},
+	"pageSize": {
+		"posts": 10,
+    "tagsHome": -1,
+		"categoriesHome": -1,
+    "seriesHome": 30,
+    "tag": 30,
+    "category": 30,
+		"series": 30,
+    "archives": 30,
+    "rss": 10
+  },
+  "inject": {
+    "header": "",
+    "body": ""
+  },
+  "theme": {
+    "name": "default",
+    "config": {
+      "github": "https://github.com/baffinlee"
+    }
+  }
+}

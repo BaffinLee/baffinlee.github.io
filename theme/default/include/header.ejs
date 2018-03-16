@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+  <meta name="description" content="<%= app.config.site.description %>">
+  <meta name="keywords" content="<%= app.config.site.keywords %>">
+  <title><%= app.title %></title>
+  <link rel="shortcut icon" href="<%= app.url.static(app.config.site.favicon) %>" type="image/x-icon">
+  <link rel="stylesheet" href="<%= app.url.static('css/app.css') %>">
+  <%_ app.config.inject.header -%>
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="container clearfix">
+      <div class="site-name">
+          <a href="<%= app.url.home() %>"><%= app.config.site.name %></a>
+          <i class="iconfont icon-menu" id="mobile-menu"></i>
+        </div>
+        <ul class="nav clearfix" id="menu">
+          <li>
+            <a href="<%= app.url.home() %>">首页</a>
+          </li>
+          <li>
+            <a href="<%= app.url.categories() %>">分类</a>
+          </li>
+          <li>
+            <a href="<%= app.url.tags() %>">标签</a>
+          </li>
+          <li>
+            <a href="<%= app.url.series() %>">系列</a>
+          </li>
+          <li>
+            <a href="<%= app.url.archives() %>">归档</a>
+          </li>
+          <li>
+            <a href="<%= app.url.page('about') %>">关于</a>
+          </li>
+        </ul>
+    </div>
+  </header>
+  <main class="main" id="main">
+    <div class="container">
