@@ -44,6 +44,11 @@
     menuOpened = !menuOpened;
   };
 
+  window.dataLayer = [
+    ['js', new Date()],
+    ['config', 'UA-115892357-1']
+  ];
+
   if (menuDom && menuBtnDom) menuBtnDom.onclick = openMenu;
   if (returnTopDom || disqusDom) {
     scrollHandler();
