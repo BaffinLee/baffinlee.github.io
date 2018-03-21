@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+  <meta name="description" content="Baffin lee的博客，分享技术文章">
+  <meta name="keywords" content="Baffin lee, 前端, JavaScript, 编程">
+  <title>打造nodejs命令行工具 - Baffin Lee&#39;s blog</title>
+  <link rel="shortcut icon" href="/static/img/favicon.ico?v=1.0.0" type="image/x-icon">
+  <link rel="stylesheet" href="/static/css/app.css?v=1.0.0">
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="container clearfix">
+      <div class="site-name">
+          <a href="/">Baffin Lee</a>
+          <i class="iconfont icon-menu" id="mobile-menu"></i>
+        </div>
+        <ul class="nav clearfix" id="menu">
+          <li>
+            <a href="/">首页</a>
+          </li>
+          <li>
+            <a href="/categories">分类</a>
+          </li>
+          <li>
+            <a href="/tags">标签</a>
+          </li>
+          <li>
+            <a href="/series">系列</a>
+          </li>
+          <li>
+            <a href="/archives">归档</a>
+          </li>
+          <li>
+            <a href="/about.html">关于</a>
+          </li>
+        </ul>
+    </div>
+  </header>
+  <main class="main" id="main">
+    <div class="container">
+    <article class="markdown-body post page">
+      <h1 class="title">打造nodejs命令行工具</h1>
+          <div class="meta">
+      <div>
+        <i class="iconfont icon-date"></i>
+        <span>2018-03-20</span>
+      </div>
+      <div>
+        <i class="iconfont icon-folder"></i>
+        
+        <a class="link" href="/categories/nodejs">nodejs</a>
+        
+      </div>
+      <div>
+        <i class="iconfont icon-tag"></i>
+        
+        <a class="link" href="/tags/js">js</a>
+        
+        <a class="link" href="/tags/nodejs">nodejs</a>
+        
+        <a class="link" href="/tags/cli">cli</a>
+        
+        <a class="link" href="/tags/tool">tool</a>
+        
+      </div>
+      
+    </div>
+      <p>前端工程化当中，大家都使用过很多的 nodejs 的命令行工具，最常用的 npm ，新建项目的脚手架 <a href="https://github.com/vuejs/vue-cli">vue-cli</a>、<a href="https://github.com/facebook/create-react-app">create-react-app</a> 等。彩色文字、对话式的交互、loading 动画等，都让人感觉高大上。在浏览器的世界，渲染呈现不同的文字、图像，大家都比较熟悉，但是对于命令行的操作，我只停留在写 log 的阶段。如何控制文字颜色、控制光标位置、清除之前的输出？当然有一些现成的库可以做到，我还是想去探究下原理。研究一下发现，这些都跟一个叫 <a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列, ANSI escape code</a> 的标准有关。</p>
+
+<h2 id="ansi转义序列">ANSI转义序列</h2>
+<p>在开始之前，还是要先介绍一下 <a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列, ANSI escape code</a> ，以下摘自维基百科。</p>
+<blockquote>
+  <p><code>ANSI转义序列</code> 是一种带内信号的转义序列标准，用于控制视频文本终端上的光标位置、颜色和其他选项。大多数ANSI转义序列是嵌入文本中以ESC转义字符和"["字符开始的字节序列。终端会把这些字节序列解释为相应的指令，而不是普通的字符编码。</p>
+</blockquote>
+<p>维基百科说的比较明白，ANSI转义序列是一个命令行转义控制符的标准，第一个字节是 <code>ASCII</code> 字符 <code>ESC</code> （码点是27，十六进制 0x1B），第二个字节则是 <code>0x40</code> - <code>0x5F</code> （ASCII @A–Z[]^_）范围内的字符。往命令行输出这样的序列，就是在发送特定的命令，命令的含义由第二个字节控制，我下面就列几个命令：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">序列</th>
+<th style="text-align:center;">名称</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">ESC X</td>
+<td style="text-align:center;">SOS - 字符串开始</td>
+</tr>
+<tr>
+<td style="text-align:center;">ESC \</td>
+<td style="text-align:center;">ST - 字符串终止</td>
+</tr>
+<tr>
+<td style="text-align:center;">ESC [</td>
+<td style="text-align:center;">CSI - 控制序列导入器</td>
+</tr>
+</tbody>
+</table>
+<p>其中 <code>ESC</code> 在 js 中用 unicode 来表示的话，就是 <code>\u001B</code> 。</p>
+<p>而我今天主要讲的是 <code>CSI</code> 命令，即 <code>\u001B[</code>， 我也列几个：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">序列</th>
+<th style="text-align:center;">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">CSI <code>n</code> A</td>
+<td style="text-align:center;">光标上移 <code>n</code> 格</td>
+</tr>
+<tr>
+<td style="text-align:center;">CSI <code>n</code> C</td>
+<td style="text-align:center;">光标前移 <code>n</code> 格</td>
+</tr>
+<tr>
+<td style="text-align:center;">CSI <code>n</code>; <code>m</code> H</td>
+<td style="text-align:center;">光标移动到第 <code>n</code> 行，第 <code>m</code> 列</td>
+</tr>
+<tr>
+<td style="text-align:center;">CSI <code>n</code> K</td>
+<td style="text-align:center;">擦除第 <code>n</code> 行</td>
+</tr>
+<tr>
+<td style="text-align:center;">CSI <code>n</code> m</td>
+<td style="text-align:center;">SGR – 选择图形再现</td>
+</tr>
+</tbody>
+</table>
+<p>这下就更清楚了，就拿光标上移来说吧，以下代码光标上移 1 格：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[1A'</span>)
+</code></pre>
+<p>这些是光标的操作，这里 <code>SGR</code> 命令又得展开讲一下，涉及到后面的文字颜色等问题，其中的 <code>n</code> 可以有很多个选项，我列几个：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center;">n</th>
+<th style="text-align:center;">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">0</td>
+<td style="text-align:center;">重置</td>
+</tr>
+<tr>
+<td style="text-align:center;">3</td>
+<td style="text-align:center;">斜体</td>
+</tr>
+<tr>
+<td style="text-align:center;">4</td>
+<td style="text-align:center;">下划线</td>
+</tr>
+<tr>
+<td style="text-align:center;">9</td>
+<td style="text-align:center;">划除</td>
+</tr>
+<tr>
+<td style="text-align:center;">30-37</td>
+<td style="text-align:center;">设置文字前景色</td>
+</tr>
+<tr>
+<td style="text-align:center;">39</td>
+<td style="text-align:center;">默认文字前景色</td>
+</tr>
+<tr>
+<td style="text-align:center;">40-47</td>
+<td style="text-align:center;">设置文字背景颜色</td>
+</tr>
+<tr>
+<td style="text-align:center;">49</td>
+<td style="text-align:center;">默认文字背景颜色</td>
+</tr>
+</tbody>
+</table>
+<p>比如说下面的代码就是输出带下划线的字符 <code>1</code>，然后重置，以免接下来的输出都带下划线：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[4m'</span> + <span class="hljs-string">'1'</span> + <span class="hljs-string">'\u001B[0m'</span>)
+</code></pre>
+<p>多个参数可以用 <code>;</code> 隔开，比如同时设置下划线、斜体和删除线（可能看不到这么多效果，因为有兼容性问题，是不是很熟悉的问题 :) ），然后重置：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[3;4;9m'</span> + <span class="hljs-string">'1'</span> + <span class="hljs-string">'\u001B[0m'</span>)
+</code></pre>
+<p>这是基础知识，接下一个个详细探讨，灵活运用。</p>
+<h2 id="颜色">颜色</h2>
+<h3 id="3位4位">3位/4位</h3>
+<p>最开始时是3位颜色，也就是8种，后面扩到4位，共16种。颜色的代码比较少，可以直接查表，比如下面是输出红色背景、绿色文字的 Hello World，然后重置为默认的前景背景色：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[41;32m'</span> + <span class="hljs-string">'Hello World'</span> + <span class="hljs-string">'\u001B[49;39m'</span>)
+</code></pre>
+<blockquote>
+  <p>设置了特定效果之后，立刻重置是个好习惯，整屏大红大绿还是比较辣眼睛的 :)</p>
+</blockquote>
+<h3 id="8位">8位</h3>
+<p>后来流行 256 色，也就是 8 位。因为是扩展的，语法特别点：<code>38;5;$color</code> 、 <code>48;5;$color</code> ， 其中 38 与 48 分别是设置前景色与背景色，<code>$color</code> 为 0-255 区间的颜色， 具体颜色值意义可以查表。示例：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-comment">// 设置前景色为：200</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[38;5;200m'</span> + <span class="hljs-string">'Hello World'</span> + <span class="hljs-string">'\u001B[39m'</span>)
+<span class="hljs-comment">// 设置背景色为：200</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[48;5;200m'</span> + <span class="hljs-string">'Hello World'</span> + <span class="hljs-string">'\u001B[49m'</span>)
+</code></pre>
+<h3 id="24位">24位</h3>
+<p>接下来就是 24 位真彩色了，语法跟 8 位的有点相似：<code>38;2;$r;$g;$b</code> 、 <code>48;2;$r;$g;$b</code> ，其中 <code>$r</code>、<code>$g</code>、<code>$b</code> 分别是0-255 区间红绿蓝颜色值，38、48 分别是设置前景色与背景色。示例：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-comment">// 设置前景色为：rgb(20, 80, 140)</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[38;2;20;80;140m'</span> + <span class="hljs-string">'Hello World'</span> + <span class="hljs-string">'\u001B[39m'</span>)
+<span class="hljs-comment">// 设置背景色为：rgb(20, 80, 140)</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[48;2;20;80;140m'</span> + <span class="hljs-string">'Hello World'</span> + <span class="hljs-string">'\u001B[49m'</span>)
+</code></pre>
+<h3 id="封装库">封装库</h3>
+<p>对于命令行设置文字颜色的封装库，推荐 <a href="https://github.com/chalk/chalk">chalk</a> ，以上的颜色设置可能在各个操作系统的不同版本上支持程度不同，chalk 会为你转换为兼容的最接近的颜色，其它特性各位看官可以去翻翻 wiki 或源代码。</p>
+<h2 id="光标操作">光标操作</h2>
+<p>光标的操作其实与设置颜色差不多，也属于 CSI 系列，以下列几个例子：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-comment">// 隐藏光标</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[?25l'</span>);
+<span class="hljs-comment">// 恢复光标</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[?25h'</span>);
+<span class="hljs-comment">// 上移 n 格</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`\u001B[¨D{n}A`</span>);
+<span class="hljs-comment">// 擦除 n 行</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`\u001B[¨D{n}K`</span>);
+<span class="hljs-comment">// 向上滚动 n 行</span>
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`\u001B[¨D{n}S`</span>);
+</code></pre>
+<p>详细的使用可以去维基百科查表，我粗略看了一遍，可以实现隐藏/显示光标、上下左右移动光标、清除行/屏幕内容、获取/存储/复位光标、上下滚动等功能。</p>
+<p>如果你想要现成的封装库的话，可以看看 <a href="https://github.com/sindresorhus/ansi-escapes">ansi-escapes</a> 。</p>
+<h2 id="动画">动画</h2>
+<p>命令行下动画的实现，其实和你熟悉的差不多，通过频繁地擦除与输出变化的内容，给你的眼睛营造动画的感觉。找一些特别形状的字符，快速地切换，形成有规律的图像变化，再配合颜色的设定，目的即达成。</p>
+<p>下面演示一个简单的动画：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-comment">// 当前帧</span>
+<span class="hljs-keyword">var</span> now = <span class="hljs-number">0</span>;
+<span class="hljs-comment">// 动画帧</span>
+<span class="hljs-keyword">var</span> frames = [<span class="hljs-string">"⠋"</span>, <span class="hljs-string">"⠙"</span>, <span class="hljs-string">"⠴"</span>, <span class="hljs-string">"⠦"</span>];
+<span class="hljs-comment">// 频率</span>
+<span class="hljs-keyword">var</span> interval = <span class="hljs-number">80</span>;
+<span class="hljs-comment">// 先隐藏光标，不然不太好看</span>
+process.stdout.write(<span class="hljs-string">'\u001B[?25l'</span>);
+<span class="hljs-comment">// 设置定时器</span>
+setInterval(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-comment">// 擦除行内容</span>
+  process.stdout.write(<span class="hljs-string">'\u001B[1K'</span>);
+  <span class="hljs-comment">// 回到起始位置，不然输出不在同一个点上</span>
+  process.stdout.write(<span class="hljs-string">'\u001B[1G'</span>);
+  <span class="hljs-comment">// 输出帧</span>
+  process.stdout.write(frames[now]);
+  <span class="hljs-comment">// 更新</span>
+  <span class="hljs-keyword">if</span> (++now &gt;= frames.length) now = <span class="hljs-number">0</span>;
+}, interval);
+
+<span class="hljs-comment">// ctrl + c</span>
+process.on(<span class="hljs-string">'SIGINT'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-comment">// 擦除行内容</span>
+  process.stdout.write(<span class="hljs-string">'\u001B[1K'</span>);
+  <span class="hljs-comment">// 最后恢复光标</span>
+  process.stdout.write(<span class="hljs-string">'\u001B[?25h'</span>);
+  <span class="hljs-comment">// 结束进程</span>
+  process.exit(<span class="hljs-number">0</span>);
+});
+</code></pre>
+<blockquote>
+  <p>这里不用 <code>console.log</code> 的原因是它会自动加上换行符 <code>\n</code>，标准输出是个 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_writable_streams">可写流</a>，自己动手调用 <code>write</code> 方法写数据即可。</p>
+</blockquote>
+<p>结束脚本的时候请按下 <kbd>ctrl</kbd> + <kbd>c</kbd> ，要是遇到了 bug （可能 <a href="https://stackoverflow.com/questions/10021373/what-is-the-windows-equivalent-of-process-onsigint-in-node-js">发生</a> 在 windows 上）：结束程序后光标一直看不见，你应该会知道怎么把光标显示回来的 :) 。</p>
+<h2 id="命令行参数">命令行参数</h2>
+<p>待续…</p>    </article>
+    <div id="disqus_thread" class="disqus-comment" data-url="https://baffinlee.com/posts/20180320-build-cli-tools-with-nodejs.html" data-id="rk1qwPTtG">
+      <span>Disqus评论加载中</span>
+    </div>
+    </div>
+  </main>
+  <footer class="footer" id="footer">
+    <div class="container clearfix">
+      <div class="copyright">&copy; 2018 Baffin Lee.</div>
+      <div class="social">
+        <a class="link" href="https://github.com/baffinlee" target="_blank">GitHub</a>
+        <a class="link" href="/rss.xml" target="_blank">RSS</a>
+      </div>
+    </div>
+    <div id="return-top" class="return-top">
+      <a class="link" href="#header"><i class="iconfont icon-top"></i></a>
+    </div>
+  </footer>
+  <script src="/static/js/app.js?v=1.0.0"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115892357-1"></script>
+</body>
+</html>
