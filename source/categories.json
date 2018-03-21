@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "name": "前端",
+    "slug": "front-end",
+    "childrens": [
+      {
+        "name": "nodejs",
+        "slug": "nodejs"
+      }
+    ]
+  }
+]

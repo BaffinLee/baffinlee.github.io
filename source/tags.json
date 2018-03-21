@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "name": "js",
+    "slug": "js"
+  },
+  {
+    "name": "nodejs",
+    "slug": "nodejs"
+  },
+  {
+    "name": "tool",
+    "slug": "tool"
+  },
+  {
+    "name": "cli",
+    "slug": "cli"
+  }
+]
