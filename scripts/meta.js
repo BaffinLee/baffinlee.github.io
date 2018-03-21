@@ -24,10 +24,11 @@ module.exports = class Meta {
       })
     });
     this.map.categories = {}
-    this._walkCategoryChildrens(this.data.categories, item => {
+    this._walkCategoryChildrens(this.data.categories, (item, parent) => {
       this.map.categories[item.name] = {
         name: item.name,
-        slug: item.slug
+        slug: item.slug,
+        parent
       }
     })
   }
@@ -80,6 +81,28 @@ module.exports = class Meta {
     }
   }
 
+  getCategoryFamily (category) {
+    const res = []
+    let target = this.map.categories[category.slug]
+
+    if (!target) throw new Error(`There has no ${category.slug} category`)
+
+    res.unshift({
+      name: target.name,
+      slug: target.slug
+    })
+
+    while (target.parent) {
+      target = target.parent
+      res.unshift({
+        name: target.name,
+        slug: target.slug
+      })
+    }
+
+    return res;
+  }
+
   checkConfig (config) {
     if (!config || !config.id || !config.title || !config.slug || !config.publishedAt) {
       throw new Error('file meta info is incomplete!')
@@ -90,11 +113,11 @@ module.exports = class Meta {
     return this.data[type]
   }
 
-  _walkCategoryChildrens (data, cb) {
+  _walkCategoryChildrens (data, cb, parent = null) {
     if (data && typeof data === 'object' && data.length) {
       data.forEach(item => {
-        cb(item)
-        this._walkCategoryChildrens(item.childrens, cb)
+        cb(item, parent)
+        this._walkCategoryChildrens(item.childrens, cb, item)
       })
     }
   }

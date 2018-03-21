@@ -15,7 +15,7 @@ const Theme = require(path.join(__dirname, './theme'))
 
 const post = new Post()
 const meta = new Meta()
-const cache = new Cache()
+const cache = new Cache(meta)
 const theme = new Theme()
 const pagesPath = path.join(__dirname, '../source/pages')
 const postsPath = path.join(__dirname, '../source/posts')
@@ -114,7 +114,9 @@ function publishPost (file, isPage) {
 
     if (postConfig.categories) {
       postConfig.categories.forEach(item => {
-        changed.categories[item.slug] = { ...item }
+        meta.getCategoryFamily(item).forEach(cate => {
+          changed.categories[cate.slug] = { ...cate }
+        })
       })
     }
 
@@ -134,7 +136,7 @@ function publishTags () {
   spinner.start('Publishing tags')
   theme.compileTagsHome(meta.getData('tags'), globalData)
   Object.keys(changed.tags).forEach(slug => {
-    theme.compileTag(changed.tags[slug], cache.getData('tags')[slug], globalData)
+    theme.compileTag(changed.tags[slug], cache.getData('tags')[slug]  || [], globalData)
   })
   spinner.succeed('Publishing tags')
 }
@@ -143,7 +145,7 @@ function publishCategories () {
   spinner.start('Publishing categories')
   theme.compileCategoriesHome(meta.getData('categories'), globalData)
   Object.keys(changed.categories).forEach(slug => {
-    theme.compileCategory(changed.categories[slug], cache.getData('categories')[slug], globalData)
+    theme.compileCategory(changed.categories[slug], cache.getData('categories')[slug]  || [], globalData)
   })
   spinner.succeed('Publishing categories')
 }
@@ -152,7 +154,7 @@ function publishSeries () {
   spinner.start('Publishing series')
   theme.compileSeriesHome(meta.getData('series'), globalData)
   Object.keys(changed.series).forEach(slug => {
-    theme.compileSeries(changed.series[slug], cache.getData('series')[slug], globalData)
+    theme.compileSeries(changed.series[slug], cache.getData('series')[slug] || [], globalData)
   })
   spinner.succeed('Publishing series')
 }

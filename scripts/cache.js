@@ -4,7 +4,7 @@ const cacheDir = path.join(__dirname, '../.cache')
 const cacheFile = path.join(__dirname, '../.cache/cache.json')
 
 module.exports = class Cache {
-  constructor () {
+  constructor (meta) {
     const arr = ['posts', 'pages']
     fse.ensureDirSync(cacheDir)
     this.cacheDir = cacheDir
@@ -17,6 +17,7 @@ module.exports = class Cache {
         pages: []
       }
     }
+    this.meta = meta
     this.data.idMap = {}
     this.data.slugMap = {}
     arr.forEach(item => {
@@ -69,8 +70,11 @@ module.exports = class Cache {
         this.data.series[post.series.slug].push(post)
       }
       post.categories.forEach(category => {
-        if (!this.data.categories[category.slug]) this.data.categories[category.slug] = []
-        this.data.categories[category.slug].push(post)
+        const list = this.meta.getCategoryFamily(category);
+        list.forEach(item => {
+          if (!this.data.categories[item.slug]) this.data.categories[item.slug] = []
+          this.data.categories[item.slug].push(post)
+        })
       })
       post.tags.forEach(tag => {
         if (!this.data.tags[tag.slug]) this.data.tags[tag.slug] = []
