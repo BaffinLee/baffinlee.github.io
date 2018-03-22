@@ -133,7 +133,7 @@ console.log(`\u001B[${n}S`);
 
 详细的使用可以去维基百科查表，我粗略看了一遍，可以实现隐藏/显示光标、上下左右移动光标、清除行/屏幕内容、获取/存储/复位光标、上下滚动等功能。
 
-如果你想要现成的封装库的话，可以看看 [ansi-escapes](https://github.com/sindresorhus/ansi-escapes) 。
+如果你想要现成的封装库的话，可以看看 [ansi-escapes](https://github.com/sindresorhus/ansi-escapes) 。nodejs 的 [readline](https://nodejs.org/dist/latest-v8.x/docs/api/readline.html) 模块也有相关的封装。
 
 # 动画
 
@@ -177,6 +177,82 @@ process.on('SIGINT', function () {
 
 结束脚本的时候请按下 <kbd>ctrl</kbd> + <kbd>c</kbd> ，要是遇到了 bug （可能 [发生](https://stackoverflow.com/questions/10021373/what-is-the-windows-equivalent-of-process-onsigint-in-node-js) 在 windows 上）：结束程序后光标一直看不见，你应该会知道怎么把光标显示回来的 :) 。
 
+封装库可以试一下 [ora](https://github.com/sindresorhus/ora) 。
+
+# 交互式命令行
+
+作为命令行工具，与用户交互是很必要的功能，比如让用户输入信息/选择选项等。
+
+了解完上面介绍的颜色、动画、光标操作后，渲染内容方面其实已经差不多，与用户交互还需要获取用户输入。熟悉 nodejs 的同学，应该很快就意识到，命令行输入即标准输入 `process.stdin` ，是一个 [可读流](https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_readable_streams) 。监听标准输入的 `data` 事件即可。
+
+```javascript
+process.stdin.on('data' function (data) {
+  console.log(data);
+});
+```
+
+运行一下，发现输出的是 [buffer](https://nodejs.org/dist/latest-v8.x/docs/api/buffer.html) 。翻翻 [文档](https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_event_data) ，可读流在没有设置编码方式的时候，默认是给 buffer 的，我们设置一下编码方式为 `utf-8`。
+
+```javascript
+process.stdin.setEncoding('utf-8');
+process.stdin.on('data' function (data) {
+  console.log(data);
+});
+```
+
+这是好像可以了，但其实还有个问题，这样只有在用户敲了回车之后才能响应。而我们要与用户交互的话，很多时候是想在用户按下任意键时就开始响应，比如一种场景是：我们在屏幕上输出好几个选项，在用户用方向键切换选项后，我们给用户选中的选项变色，让用户知道现在选中了这个选项。
+
+怎么办呢？方法肯定有的，查看 [文档](https://nodejs.org/dist/latest-v8.x/docs/api/tty.html)。
+
+> 当 Node.js 检测到正运行在一个文本终端（TTY）的上下文中时，则 process.stdin 默认会被初始化为一个 tty.ReadStream 实例，且 process.stdout 和 process.stderr 默认会被初始化为一个 tty.WriteStream 实例。
+
+`process.stdin` 作为 `tty.ReadStream` 的实例，继承了 `setRawMode` 方法。调用此方法可以打开或关闭命令行的原始模式，在原始模式下，输入的每个字符均触发 `data` 事件。
+
+下面的示例检测用户是否按下 <kbd>↑</kbd> 按键：
+
+```javascript
+process.stdin.setEncoding('utf-8');
+process.stdin.setRawMode(true);
+process.stdin.on('data', function (data) {
+  // up arrow
+  if (data === '\u001B[A') {
+    console.log('up arrow pressed!');
+  }
+  // ctrl c
+  if (data === '\u0003') {
+    console.log('bye!');
+    process.exit(0);
+  }
+});
+```
+
+这样判断按键有点原始，比较晦涩，可以借助 readline 模块的 [emitKeypressEvents](https://nodejs.org/dist/latest-v8.x/docs/api/readline.html#readline_readline_emitkeypressevents_stream_interface) 方法，让标准输入流产生 `keypress` 事件：
+
+```javascript
+const readline = require('readline');
+process.stdin.setRawMode(true);
+process.stdin.setEncoding('utf-8');
+readline.emitKeypressEvents(process.stdin);
+process.stdin.on('keypress', function (key, data) {
+  console.log(key, data);
+  if (data.name === 'c' && data.ctrl) {
+    process.exit(0);
+  }
+});
+```
+
+封装库可以看看 [Inquirer.js](https://github.com/SBoudrias/Inquirer.js) ，其实 nodejs 的 readline 模块也有相关函数。
+
 # 命令行参数
 
-待续...
+nodejs 的命令行参数放在 `process.argv` 数组里，第一个是 node 的路径，第二个是脚本文件的路径，第三个开始是自定义参数。这个比较容易理解，比如你这样运行你的脚本 `node app.js --config=config.json` ，在 `app.js` 里，`process.argv[2]` 就是 `--config=config.json` ，然后你自己处理一下，就知道设置了什么参数了。
+
+使用 [commander.js](https://github.com/tj/commander.js/) 、[yargs](https://github.com/yargs/yargs) 等封装库之后可以玩得更溜。
+
+# 子进程
+
+
+# 可运行文件
+
+
+# 总结
