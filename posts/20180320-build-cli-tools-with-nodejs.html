@@ -225,7 +225,7 @@
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`\u001B[¨D{n}S`</span>);
 </code></pre>
 <p>详细的使用可以去维基百科查表，我粗略看了一遍，可以实现隐藏/显示光标、上下左右移动光标、清除行/屏幕内容、获取/存储/复位光标、上下滚动等功能。</p>
-<p>如果你想要现成的封装库的话，可以看看 <a href="https://github.com/sindresorhus/ansi-escapes">ansi-escapes</a> 。</p>
+<p>如果你想要现成的封装库的话，可以看看 <a href="https://github.com/sindresorhus/ansi-escapes">ansi-escapes</a> 。nodejs 的 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/readline.html">readline</a> 模块也有相关的封装。</p>
 <h2 id="动画">动画</h2>
 <p>命令行下动画的实现，其实和你熟悉的差不多，通过频繁地擦除与输出变化的内容，给你的眼睛营造动画的感觉。找一些特别形状的字符，快速地切换，形成有规律的图像变化，再配合颜色的设定，目的即达成。</p>
 <p>下面演示一个简单的动画：</p>
@@ -263,8 +263,65 @@ process.on(<span class="hljs-string">'SIGINT'</span>, <span class="hljs-function
   <p>这里不用 <code>console.log</code> 的原因是它会自动加上换行符 <code>\n</code>，标准输出是个 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_writable_streams">可写流</a>，自己动手调用 <code>write</code> 方法写数据即可。</p>
 </blockquote>
 <p>结束脚本的时候请按下 <kbd>ctrl</kbd> + <kbd>c</kbd> ，要是遇到了 bug （可能 <a href="https://stackoverflow.com/questions/10021373/what-is-the-windows-equivalent-of-process-onsigint-in-node-js">发生</a> 在 windows 上）：结束程序后光标一直看不见，你应该会知道怎么把光标显示回来的 :) 。</p>
+<p>封装库可以试一下 <a href="https://github.com/sindresorhus/ora">ora</a> 。</p>
+<h2 id="交互式命令行">交互式命令行</h2>
+<p>作为命令行工具，与用户交互是很必要的功能，比如让用户输入信息/选择选项等。</p>
+<p>了解完上面介绍的颜色、动画、光标操作后，渲染内容方面其实已经差不多，与用户交互还需要获取用户输入。熟悉 nodejs 的同学，应该很快就意识到，命令行输入即标准输入 <code>process.stdin</code> ，是一个 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_readable_streams">可读流</a> 。监听标准输入的 <code>data</code> 事件即可。</p>
+<pre><code class="hljs lang-javascript">process.stdin.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(data);
+});
+</code></pre>
+<p>运行一下，发现输出的是 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/buffer.html">buffer</a> 。翻翻 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_event_data">文档</a> ，可读流在没有设置编码方式的时候，默认是给 buffer 的，我们设置一下编码方式为 <code>utf-8</code>。</p>
+<pre><code class="hljs lang-javascript">process.stdin.setEncoding(<span class="hljs-string">'utf-8'</span>);
+process.stdin.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(data);
+});
+</code></pre>
+<p>这是好像可以了，但其实还有个问题，这样只有在用户敲了回车之后才能响应。而我们要与用户交互的话，很多时候是想在用户按下任意键时就开始响应，比如这种场景是：我们在屏幕上输出好几个选项，在用户用方向键切换选项后，我们给用户选中的选项变色，让用户知道现在选中了哪个选项。</p>
+<p>怎么办呢？方法肯定有的，查看 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/tty.html">文档</a>。</p>
+<blockquote>
+  <p>当 Node.js 检测到正运行在一个文本终端（TTY）的上下文中时，则 process.stdin 默认会被初始化为一个 tty.ReadStream 实例，且 process.stdout 和 process.stderr 默认会被初始化为一个 tty.WriteStream 实例。</p>
+</blockquote>
+<p><code>process.stdin</code> 作为 <code>tty.ReadStream</code> 的实例，继承了 <code>setRawMode</code> 方法。调用此方法可以打开或关闭命令行的原始模式，在原始模式下，输入的每个字符均触发 <code>data</code> 事件。</p>
+<p>下面的示例检测用户是否按下 <kbd>↑</kbd> 按键：</p>
+<pre><code class="hljs lang-javascript">process.stdin.setEncoding(<span class="hljs-string">'utf-8'</span>);
+process.stdin.setRawMode(<span class="hljs-literal">true</span>);
+process.stdin.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
+  <span class="hljs-comment">// up arrow</span>
+  <span class="hljs-keyword">if</span> (data === <span class="hljs-string">'\u001B[A'</span>) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'up arrow pressed!'</span>);
+  }
+  <span class="hljs-comment">// ctrl c</span>
+  <span class="hljs-keyword">if</span> (data === <span class="hljs-string">'\u0003'</span>) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'bye!'</span>);
+    process.exit(<span class="hljs-number">0</span>);
+  }
+});
+</code></pre>
+<p>这样判断按键有点原始，比较晦涩，可以借助 readline 模块的 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/readline.html#readline_readline_emitkeypressevents_stream_interface">emitKeypressEvents</a> 方法，让标准输入流产生 <code>keypress</code> 事件：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-keyword">const</span> readline = <span class="hljs-built_in">require</span>(<span class="hljs-string">'readline'</span>);
+process.stdin.setRawMode(<span class="hljs-literal">true</span>);
+process.stdin.setEncoding(<span class="hljs-string">'utf-8'</span>);
+readline.emitKeypressEvents(process.stdin);
+process.stdin.on(<span class="hljs-string">'keypress'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">key, data</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(key, data);
+  <span class="hljs-keyword">if</span> (data.name === <span class="hljs-string">'c'</span> &amp;&amp; data.ctrl) {
+    process.exit(<span class="hljs-number">0</span>);
+  }
+});
+</code></pre>
+<p>封装库可以看看 <a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a> ，其实 nodejs 的 readline 模块也有相关函数。</p>
 <h2 id="命令行参数">命令行参数</h2>
-<p>待续…</p>    </article>
+<p>nodejs 的命令行参数放在 <code>process.argv</code> 数组里，第一个是 node 的路径，第二个是脚本文件的路径，第三个开始是自定义参数。这个比较容易理解，比如你这样运行你的脚本 <code>node app.js --config=config.json</code> ，在 <code>app.js</code> 里，<code>process.argv[2]</code> 就是 <code>--config=config.json</code> ，然后你自己处理一下，就知道设置了什么参数。</p>
+<p>使用 <a href="https://github.com/tj/commander.js/">commander.js</a> 、<a href="https://github.com/yargs/yargs">yargs</a> 等封装库可以玩得更溜。</p>
+<h2 id="总结">总结</h2>
+<p>开始介绍了一下ANSI转义序列；然后顺势讲了设置命令行文字颜色、光标位置、动画以及监听键盘事件的实现；最后提及了命令行参数的知识。主要介绍一下原理性的东西，虽然有提到第三方库，但是并没有介绍怎么用，大家可以自行查看文档（或参考 <a href="http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html">此文章</a> ）。希望对酷炫的命令行充满好奇的同学有点帮助。</p>
+<p>参考：</p>
+<ul>
+<li><a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列</a></li>
+<li><a href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html">stream</a>、<a href="https://nodejs.org/dist/latest-v8.x/docs/api/process.html">process</a>、<a href="https://nodejs.org/dist/latest-v8.x/docs/api/readline.html">readline</a>、<a href="https://nodejs.org/dist/latest-v8.x/docs/api/tty.html">tty</a></li>
+</ul>
+<p>（完）</p>    </article>
     <div id="disqus_thread" class="disqus-comment" data-url="https://baffinlee.com/posts/20180320-build-cli-tools-with-nodejs.html" data-id="rk1qwPTtG">
       <span>Disqus评论加载中</span>
     </div>
