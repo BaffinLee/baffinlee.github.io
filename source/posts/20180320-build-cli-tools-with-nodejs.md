@@ -186,7 +186,7 @@ process.on('SIGINT', function () {
 了解完上面介绍的颜色、动画、光标操作后，渲染内容方面其实已经差不多，与用户交互还需要获取用户输入。熟悉 nodejs 的同学，应该很快就意识到，命令行输入即标准输入 `process.stdin` ，是一个 [可读流](https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_readable_streams) 。监听标准输入的 `data` 事件即可。
 
 ```javascript
-process.stdin.on('data' function (data) {
+process.stdin.on('data', function (data) {
   console.log(data);
 });
 ```
@@ -195,12 +195,12 @@ process.stdin.on('data' function (data) {
 
 ```javascript
 process.stdin.setEncoding('utf-8');
-process.stdin.on('data' function (data) {
+process.stdin.on('data', function (data) {
   console.log(data);
 });
 ```
 
-这是好像可以了，但其实还有个问题，这样只有在用户敲了回车之后才能响应。而我们要与用户交互的话，很多时候是想在用户按下任意键时就开始响应，比如一种场景是：我们在屏幕上输出好几个选项，在用户用方向键切换选项后，我们给用户选中的选项变色，让用户知道现在选中了这个选项。
+这是好像可以了，但其实还有个问题，这样只有在用户敲了回车之后才能响应。而我们要与用户交互的话，很多时候是想在用户按下任意键时就开始响应，比如这种场景是：我们在屏幕上输出好几个选项，在用户用方向键切换选项后，我们给用户选中的选项变色，让用户知道现在选中了哪个选项。
 
 怎么办呢？方法肯定有的，查看 [文档](https://nodejs.org/dist/latest-v8.x/docs/api/tty.html)。
 
@@ -245,14 +245,17 @@ process.stdin.on('keypress', function (key, data) {
 
 # 命令行参数
 
-nodejs 的命令行参数放在 `process.argv` 数组里，第一个是 node 的路径，第二个是脚本文件的路径，第三个开始是自定义参数。这个比较容易理解，比如你这样运行你的脚本 `node app.js --config=config.json` ，在 `app.js` 里，`process.argv[2]` 就是 `--config=config.json` ，然后你自己处理一下，就知道设置了什么参数了。
+nodejs 的命令行参数放在 `process.argv` 数组里，第一个是 node 的路径，第二个是脚本文件的路径，第三个开始是自定义参数。这个比较容易理解，比如你这样运行你的脚本 `node app.js --config=config.json` ，在 `app.js` 里，`process.argv[2]` 就是 `--config=config.json` ，然后你自己处理一下，就知道设置了什么参数。
 
-使用 [commander.js](https://github.com/tj/commander.js/) 、[yargs](https://github.com/yargs/yargs) 等封装库之后可以玩得更溜。
-
-# 子进程
-
-
-# 可运行文件
-
+使用 [commander.js](https://github.com/tj/commander.js/) 、[yargs](https://github.com/yargs/yargs) 等封装库可以玩得更溜。
 
 # 总结
+
+开始介绍了一下ANSI转义序列；然后顺势讲了设置命令行文字颜色、光标位置、动画以及监听键盘事件的实现；最后提及了命令行参数的知识。主要介绍一下原理性的东西，虽然有提到第三方库，但是并没有介绍怎么用，大家可以自行查看文档（或参考 [此文章](http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html) ）。希望对酷炫的命令行充满好奇的同学有点帮助。
+
+参考：
+
+- [ANSI转义序列](https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97)
+- [stream](https://nodejs.org/dist/latest-v8.x/docs/api/stream.html)、[process](https://nodejs.org/dist/latest-v8.x/docs/api/process.html)、[readline](https://nodejs.org/dist/latest-v8.x/docs/api/readline.html)、[tty](https://nodejs.org/dist/latest-v8.x/docs/api/tty.html)
+
+（完）
