@@ -3,12 +3,13 @@ const crypto = require('crypto')
 const showdown  = require('showdown')
 const hljs = require('highlight.js')
 const renderCode = function (code, lang) {
+  const str = code.replace(/¨D/g, '$');
   let html = ''
   let cls = ''
   try {
-    html = hljs.highlight(lang, code).value
+    html = hljs.highlight(lang, str).value
   } catch (e) {
-    html = hljs.highlightAuto(code).value
+    html = hljs.highlightAuto(str).value
   }
   cls = lang ? ` lang-${lang}` : ''
   return `<pre><code class="hljs${cls}">${html}\n</code></pre>`
@@ -35,6 +36,18 @@ const renderer = new showdown.Converter({
               code
             }
             return `<!--CODEBLOCK_${offset}-->`
+          }
+        },
+        {
+          type: 'output',
+          regex: /<a\s+href="/g,
+          replace: '<a target="_blank" href="'
+        },
+        {
+          type: 'output',
+          regex: /<h2\s+id="(.+?)"\s*>(.+?)<\/h2>/g,
+          replace: (_, id, str) => {
+            return `<h2 id="${id}"><a href="#${id}" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>${str}</h2>`;
           }
         },
         {

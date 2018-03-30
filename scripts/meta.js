@@ -83,9 +83,9 @@ module.exports = class Meta {
 
   getCategoryFamily (category) {
     const res = []
-    let target = this.map.categories[category.slug]
+    let target = this.map.categories[category.name]
 
-    if (!target) throw new Error(`There has no ${category.slug} category`)
+    if (!target) throw new Error(`There has no ${category.name} category`)
 
     res.unshift({
       name: target.name,
