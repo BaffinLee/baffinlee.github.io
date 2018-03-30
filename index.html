@@ -11,8 +11,8 @@
   <meta name="description" content="Baffin lee的博客，分享技术文章">
   <meta name="keywords" content="Baffin lee, 前端, JavaScript, 编程">
   <title>Baffin Lee&#39;s blog</title>
-  <link rel="shortcut icon" href="/static/img/favicon.ico?v=1.0.0" type="image/x-icon">
-  <link rel="stylesheet" href="/static/css/app.css?v=1.0.0">
+  <link rel="shortcut icon" href="/static/img/favicon.ico?v=1.0.1" type="image/x-icon">
+  <link rel="stylesheet" href="/static/css/app.css?v=1.0.1">
 </head>
 <body>
   <header class="header" id="header">
@@ -46,6 +46,30 @@
   <main class="main" id="main">
     <div class="container">
     <article class="post">
+      <a class="link title" href="/posts/20180328-color-spaces-and-conversions.html">各种颜色类型及之间的转换</a>
+          <div class="meta">
+      <div>
+        <i class="iconfont icon-date"></i>
+        <span>2018-03-28</span>
+      </div>
+      <div>
+        <i class="iconfont icon-folder"></i>
+        
+        <a class="link" href="/categories/design">设计</a>
+        
+      </div>
+      <div>
+        <i class="iconfont icon-tag"></i>
+        
+        <a class="link" href="/tags/color">颜色</a>
+        
+      </div>
+      
+    </div>
+      <div class="markdown-body">
+        <p>作为前端，写 css 时经常遇到颜色的设置。常见颜色格式有 <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords">CSS 命名颜色</a>、rgb、hex、hsl，不常用的 hwb、cmyk等，还有一些不能在 css 里用的，比如 lab、xyz。这篇文章简单介绍一下各种颜色类型，以及它们之间的转换。</p>      </div>
+      <a class="read-more link" href="/posts/20180328-color-spaces-and-conversions.html">阅读更多&gt;&gt;</a>
+    </article><article class="post">
       <a class="link title" href="/posts/20180320-build-cli-tools-with-nodejs.html">打造nodejs命令行工具</a>
           <div class="meta">
       <div>
@@ -73,7 +97,7 @@
       
     </div>
       <div class="markdown-body">
-        <p>前端工程化当中，大家都使用过很多的 nodejs 的命令行工具，最常用的 npm ，新建项目的脚手架 <a href="https://github.com/vuejs/vue-cli">vue-cli</a>、<a href="https://github.com/facebook/create-react-app">create-react-app</a> 等。彩色文字、对话式的交互、loading 动画等，都让人感觉高大上。在浏览器的世界，渲染呈现不同的文字、图像，大家都比较熟悉，但是对于命令行的操作，我只停留在写 log 的阶段。如何控制文字颜色、控制光标位置、清除之前的输出？当然有一些现成的库可以做到，我还是想去探究下原理。研究一下发现，这些都跟一个叫 <a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列, ANSI escape code</a> 的标准有关。</p>      </div>
+        <p>前端工程化当中，大家都使用过很多的 nodejs 的命令行工具，最常用的 npm ，新建项目的脚手架 <a target="_blank" href="https://github.com/vuejs/vue-cli">vue-cli</a>、<a target="_blank" href="https://github.com/facebook/create-react-app">create-react-app</a> 等。彩色文字、对话式的交互、loading 动画等，都让人感觉高大上。在浏览器的世界，渲染呈现不同的文字、图像，大家都比较熟悉，但是对于命令行的操作，我只停留在写 log 的阶段。如何控制文字颜色、控制光标位置、清除之前的输出？当然有一些现成的库可以做到，我还是想去探究下原理。研究一下发现，这些都跟一个叫 <a target="_blank" href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列, ANSI escape code</a> 的标准有关。</p>      </div>
       <a class="read-more link" href="/posts/20180320-build-cli-tools-with-nodejs.html">阅读更多&gt;&gt;</a>
     </article>
         
@@ -91,7 +115,7 @@
       <a class="link" href="#header"><i class="iconfont icon-top"></i></a>
     </div>
   </footer>
-  <script src="/static/js/app.js?v=1.0.0"></script>
+  <script src="/static/js/app.js?v=1.0.1"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115892357-1"></script>
 </body>
 </html>

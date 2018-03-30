@@ -11,8 +11,8 @@
   <meta name="description" content="Baffin lee的博客，分享技术文章">
   <meta name="keywords" content="Baffin lee, 前端, JavaScript, 编程">
   <title>打造nodejs命令行工具 - Baffin Lee&#39;s blog</title>
-  <link rel="shortcut icon" href="/static/img/favicon.ico?v=1.0.0" type="image/x-icon">
-  <link rel="stylesheet" href="/static/css/app.css?v=1.0.0">
+  <link rel="shortcut icon" href="/static/img/favicon.ico?v=1.0.1" type="image/x-icon">
+  <link rel="stylesheet" href="/static/css/app.css?v=1.0.1">
 </head>
 <body>
   <header class="header" id="header">
@@ -72,10 +72,10 @@
       </div>
       
     </div>
-      <p>前端工程化当中，大家都使用过很多的 nodejs 的命令行工具，最常用的 npm ，新建项目的脚手架 <a href="https://github.com/vuejs/vue-cli">vue-cli</a>、<a href="https://github.com/facebook/create-react-app">create-react-app</a> 等。彩色文字、对话式的交互、loading 动画等，都让人感觉高大上。在浏览器的世界，渲染呈现不同的文字、图像，大家都比较熟悉，但是对于命令行的操作，我只停留在写 log 的阶段。如何控制文字颜色、控制光标位置、清除之前的输出？当然有一些现成的库可以做到，我还是想去探究下原理。研究一下发现，这些都跟一个叫 <a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列, ANSI escape code</a> 的标准有关。</p>
+      <p>前端工程化当中，大家都使用过很多的 nodejs 的命令行工具，最常用的 npm ，新建项目的脚手架 <a target="_blank" href="https://github.com/vuejs/vue-cli">vue-cli</a>、<a target="_blank" href="https://github.com/facebook/create-react-app">create-react-app</a> 等。彩色文字、对话式的交互、loading 动画等，都让人感觉高大上。在浏览器的世界，渲染呈现不同的文字、图像，大家都比较熟悉，但是对于命令行的操作，我只停留在写 log 的阶段。如何控制文字颜色、控制光标位置、清除之前的输出？当然有一些现成的库可以做到，我还是想去探究下原理。研究一下发现，这些都跟一个叫 <a target="_blank" href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列, ANSI escape code</a> 的标准有关。</p>
 
-<h2 id="ansi转义序列">ANSI转义序列</h2>
-<p>在开始之前，还是要先介绍一下 <a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列, ANSI escape code</a> ，以下摘自维基百科。</p>
+<h2 id="ansi转义序列"><a href="#ansi转义序列" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>ANSI转义序列</h2>
+<p>在开始之前，还是要先介绍一下 <a target="_blank" href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列, ANSI escape code</a> ，以下摘自维基百科。</p>
 <blockquote>
   <p><code>ANSI转义序列</code> 是一种带内信号的转义序列标准，用于控制视频文本终端上的光标位置、颜色和其他选项。大多数ANSI转义序列是嵌入文本中以ESC转义字符和"["字符开始的字节序列。终端会把这些字节序列解释为相应的指令，而不是普通的字符编码。</p>
 </blockquote>
@@ -187,7 +187,7 @@
 <pre><code class="hljs lang-javascript"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[3;4;9m'</span> + <span class="hljs-string">'1'</span> + <span class="hljs-string">'\u001B[0m'</span>)
 </code></pre>
 <p>这是基础知识，接下一个个详细探讨，灵活运用。</p>
-<h2 id="颜色">颜色</h2>
+<h2 id="颜色"><a href="#颜色" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>颜色</h2>
 <h3 id="3位4位">3位/4位</h3>
 <p>最开始时是3位颜色，也就是8种，后面扩到4位，共16种。颜色的代码比较少，可以直接查表，比如下面是输出红色背景、绿色文字的 Hello World，然后重置为默认的前景背景色：</p>
 <pre><code class="hljs lang-javascript"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[41;32m'</span> + <span class="hljs-string">'Hello World'</span> + <span class="hljs-string">'\u001B[49;39m'</span>)
@@ -210,23 +210,23 @@
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[48;2;20;80;140m'</span> + <span class="hljs-string">'Hello World'</span> + <span class="hljs-string">'\u001B[49m'</span>)
 </code></pre>
 <h3 id="封装库">封装库</h3>
-<p>对于命令行设置文字颜色的封装库，推荐 <a href="https://github.com/chalk/chalk">chalk</a> ，以上的颜色设置可能在各个操作系统的不同版本上支持程度不同，chalk 会为你转换为兼容的最接近的颜色，其它特性各位看官可以去翻翻 wiki 或源代码。</p>
-<h2 id="光标操作">光标操作</h2>
+<p>对于命令行设置文字颜色的封装库，推荐 <a target="_blank" href="https://github.com/chalk/chalk">chalk</a> ，以上的颜色设置可能在各个操作系统的不同版本上支持程度不同，chalk 会为你转换为兼容的最接近的颜色，其它特性各位看官可以去翻翻 wiki 或源代码。</p>
+<h2 id="光标操作"><a href="#光标操作" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>光标操作</h2>
 <p>光标的操作其实与设置颜色差不多，也属于 CSI 系列，以下列几个例子：</p>
 <pre><code class="hljs lang-javascript"><span class="hljs-comment">// 隐藏光标</span>
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[?25l'</span>);
 <span class="hljs-comment">// 恢复光标</span>
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'\u001B[?25h'</span>);
 <span class="hljs-comment">// 上移 n 格</span>
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`\u001B[¨D{n}A`</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`\u001B[<span class="hljs-subst">${n}</span>A`</span>);
 <span class="hljs-comment">// 擦除 n 行</span>
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`\u001B[¨D{n}K`</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`\u001B[<span class="hljs-subst">${n}</span>K`</span>);
 <span class="hljs-comment">// 向上滚动 n 行</span>
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`\u001B[¨D{n}S`</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">`\u001B[<span class="hljs-subst">${n}</span>S`</span>);
 </code></pre>
 <p>详细的使用可以去维基百科查表，我粗略看了一遍，可以实现隐藏/显示光标、上下左右移动光标、清除行/屏幕内容、获取/存储/复位光标、上下滚动等功能。</p>
-<p>如果你想要现成的封装库的话，可以看看 <a href="https://github.com/sindresorhus/ansi-escapes">ansi-escapes</a> 。nodejs 的 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/readline.html">readline</a> 模块也有相关的封装。</p>
-<h2 id="动画">动画</h2>
+<p>如果你想要现成的封装库的话，可以看看 <a target="_blank" href="https://github.com/sindresorhus/ansi-escapes">ansi-escapes</a> 。nodejs 的 <a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/readline.html">readline</a> 模块也有相关的封装。</p>
+<h2 id="动画"><a href="#动画" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>动画</h2>
 <p>命令行下动画的实现，其实和你熟悉的差不多，通过频繁地擦除与输出变化的内容，给你的眼睛营造动画的感觉。找一些特别形状的字符，快速地切换，形成有规律的图像变化，再配合颜色的设定，目的即达成。</p>
 <p>下面演示一个简单的动画：</p>
 <pre><code class="hljs lang-javascript"><span class="hljs-comment">// 当前帧</span>
@@ -260,25 +260,25 @@ process.on(<span class="hljs-string">'SIGINT'</span>, <span class="hljs-function
 });
 </code></pre>
 <blockquote>
-  <p>这里不用 <code>console.log</code> 的原因是它会自动加上换行符 <code>\n</code>，标准输出是个 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_writable_streams">可写流</a>，自己动手调用 <code>write</code> 方法写数据即可。</p>
+  <p>这里不用 <code>console.log</code> 的原因是它会自动加上换行符 <code>\n</code>，标准输出是个 <a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_writable_streams">可写流</a>，自己动手调用 <code>write</code> 方法写数据即可。</p>
 </blockquote>
-<p>结束脚本的时候请按下 <kbd>ctrl</kbd> + <kbd>c</kbd> ，要是遇到了 bug （可能 <a href="https://stackoverflow.com/questions/10021373/what-is-the-windows-equivalent-of-process-onsigint-in-node-js">发生</a> 在 windows 上）：结束程序后光标一直看不见，你应该会知道怎么把光标显示回来的 :) 。</p>
-<p>封装库可以试一下 <a href="https://github.com/sindresorhus/ora">ora</a> 。</p>
-<h2 id="交互式命令行">交互式命令行</h2>
+<p>结束脚本的时候请按下 <kbd>ctrl</kbd> + <kbd>c</kbd> ，要是遇到了 bug （可能 <a target="_blank" href="https://stackoverflow.com/questions/10021373/what-is-the-windows-equivalent-of-process-onsigint-in-node-js">发生</a> 在 windows 上）：结束程序后光标一直看不见，你应该会知道怎么把光标显示回来的 :) 。</p>
+<p>封装库可以试一下 <a target="_blank" href="https://github.com/sindresorhus/ora">ora</a> 。</p>
+<h2 id="交互式命令行"><a href="#交互式命令行" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>交互式命令行</h2>
 <p>作为命令行工具，与用户交互是很必要的功能，比如让用户输入信息/选择选项等。</p>
-<p>了解完上面介绍的颜色、动画、光标操作后，渲染内容方面其实已经差不多，与用户交互还需要获取用户输入。熟悉 nodejs 的同学，应该很快就意识到，命令行输入即标准输入 <code>process.stdin</code> ，是一个 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_readable_streams">可读流</a> 。监听标准输入的 <code>data</code> 事件即可。</p>
+<p>了解完上面介绍的颜色、动画、光标操作后，渲染内容方面其实已经差不多，与用户交互还需要获取用户输入。熟悉 nodejs 的同学，应该很快就意识到，命令行输入即标准输入 <code>process.stdin</code> ，是一个 <a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_readable_streams">可读流</a> 。监听标准输入的 <code>data</code> 事件即可。</p>
 <pre><code class="hljs lang-javascript">process.stdin.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
   <span class="hljs-built_in">console</span>.log(data);
 });
 </code></pre>
-<p>运行一下，发现输出的是 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/buffer.html">buffer</a> 。翻翻 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_event_data">文档</a> ，可读流在没有设置编码方式的时候，默认是给 buffer 的，我们设置一下编码方式为 <code>utf-8</code>。</p>
+<p>运行一下，发现输出的是 <a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/buffer.html">buffer</a> 。翻翻 <a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html#stream_event_data">文档</a> ，可读流在没有设置编码方式的时候，默认是给 buffer 的，我们设置一下编码方式为 <code>utf-8</code>。</p>
 <pre><code class="hljs lang-javascript">process.stdin.setEncoding(<span class="hljs-string">'utf-8'</span>);
 process.stdin.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">data</span>) </span>{
   <span class="hljs-built_in">console</span>.log(data);
 });
 </code></pre>
 <p>这是好像可以了，但其实还有个问题，这样只有在用户敲了回车之后才能响应。而我们要与用户交互的话，很多时候是想在用户按下任意键时就开始响应，比如这种场景是：我们在屏幕上输出好几个选项，在用户用方向键切换选项后，我们给用户选中的选项变色，让用户知道现在选中了哪个选项。</p>
-<p>怎么办呢？方法肯定有的，查看 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/tty.html">文档</a>。</p>
+<p>怎么办呢？方法肯定有的，查看 <a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/tty.html">文档</a>。</p>
 <blockquote>
   <p>当 Node.js 检测到正运行在一个文本终端（TTY）的上下文中时，则 process.stdin 默认会被初始化为一个 tty.ReadStream 实例，且 process.stdout 和 process.stderr 默认会被初始化为一个 tty.WriteStream 实例。</p>
 </blockquote>
@@ -298,7 +298,7 @@ process.stdin.on(<span class="hljs-string">'data'</span>, <span class="hljs-func
   }
 });
 </code></pre>
-<p>这样判断按键有点原始，比较晦涩，可以借助 readline 模块的 <a href="https://nodejs.org/dist/latest-v8.x/docs/api/readline.html#readline_readline_emitkeypressevents_stream_interface">emitKeypressEvents</a> 方法，让标准输入流产生 <code>keypress</code> 事件：</p>
+<p>这样判断按键有点原始，比较晦涩，可以借助 readline 模块的 <a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/readline.html#readline_readline_emitkeypressevents_stream_interface">emitKeypressEvents</a> 方法，让标准输入流产生 <code>keypress</code> 事件：</p>
 <pre><code class="hljs lang-javascript"><span class="hljs-keyword">const</span> readline = <span class="hljs-built_in">require</span>(<span class="hljs-string">'readline'</span>);
 process.stdin.setRawMode(<span class="hljs-literal">true</span>);
 process.stdin.setEncoding(<span class="hljs-string">'utf-8'</span>);
@@ -310,16 +310,16 @@ process.stdin.on(<span class="hljs-string">'keypress'</span>, <span class="hljs-
   }
 });
 </code></pre>
-<p>封装库可以看看 <a href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a> ，其实 nodejs 的 readline 模块也有相关函数。</p>
-<h2 id="命令行参数">命令行参数</h2>
+<p>封装库可以看看 <a target="_blank" href="https://github.com/SBoudrias/Inquirer.js">Inquirer.js</a> ，其实 nodejs 的 readline 模块也有相关函数。</p>
+<h2 id="命令行参数"><a href="#命令行参数" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>命令行参数</h2>
 <p>nodejs 的命令行参数放在 <code>process.argv</code> 数组里，第一个是 node 的路径，第二个是脚本文件的路径，第三个开始是自定义参数。这个比较容易理解，比如你这样运行你的脚本 <code>node app.js --config=config.json</code> ，在 <code>app.js</code> 里，<code>process.argv[2]</code> 就是 <code>--config=config.json</code> ，然后你自己处理一下，就知道设置了什么参数。</p>
-<p>使用 <a href="https://github.com/tj/commander.js/">commander.js</a> 、<a href="https://github.com/yargs/yargs">yargs</a> 等封装库可以玩得更溜。</p>
-<h2 id="总结">总结</h2>
-<p>开始介绍了一下ANSI转义序列；然后顺势讲了设置命令行文字颜色、光标位置、动画以及监听键盘事件的实现；最后提及了命令行参数的知识。主要介绍一下原理性的东西，虽然有提到第三方库，但是并没有介绍怎么用，大家可以自行查看文档（或参考 <a href="http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html">此文章</a> ）。希望对酷炫的命令行充满好奇的同学有点帮助。</p>
+<p>使用 <a target="_blank" href="https://github.com/tj/commander.js/">commander.js</a> 、<a target="_blank" href="https://github.com/yargs/yargs">yargs</a> 等封装库可以玩得更溜。</p>
+<h2 id="总结"><a href="#总结" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>总结</h2>
+<p>开始介绍了一下ANSI转义序列；然后顺势讲了设置命令行文字颜色、光标位置、动画以及监听键盘事件的实现；最后提及了命令行参数的知识。主要介绍一下原理性的东西，虽然有提到第三方库，但是并没有介绍怎么用，大家可以自行查看文档（或参考 <a target="_blank" href="http://www.ruanyifeng.com/blog/2015/05/command-line-with-node.html">此文章</a> ）。希望对酷炫的命令行充满好奇的同学有点帮助。</p>
 <p>参考：</p>
 <ul>
-<li><a href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列</a></li>
-<li><a href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html">stream</a>、<a href="https://nodejs.org/dist/latest-v8.x/docs/api/process.html">process</a>、<a href="https://nodejs.org/dist/latest-v8.x/docs/api/readline.html">readline</a>、<a href="https://nodejs.org/dist/latest-v8.x/docs/api/tty.html">tty</a></li>
+<li><a target="_blank" href="https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97">ANSI转义序列</a></li>
+<li><a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/stream.html">stream</a>、<a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/process.html">process</a>、<a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/readline.html">readline</a>、<a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/tty.html">tty</a></li>
 </ul>
 <p>（完）</p>    </article>
     <div id="disqus_thread" class="disqus-comment" data-url="https://baffinlee.com/posts/20180320-build-cli-tools-with-nodejs.html" data-id="rk1qwPTtG">
@@ -339,7 +339,7 @@ process.stdin.on(<span class="hljs-string">'keypress'</span>, <span class="hljs-
       <a class="link" href="#header"><i class="iconfont icon-top"></i></a>
     </div>
   </footer>
-  <script src="/static/js/app.js?v=1.0.0"></script>
+  <script src="/static/js/app.js?v=1.0.1"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115892357-1"></script>
 </body>
 </html>
