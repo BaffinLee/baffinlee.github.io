@@ -13,5 +13,10 @@
     "name": "设计",
     "slug": "design",
     "childrens": []
+  },
+  {
+    "name": "算法",
+    "slug": "algorithm",
+    "childrens": []
   }
 ]
