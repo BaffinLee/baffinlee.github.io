@@ -36,7 +36,7 @@ a.link {
 }
 
 a.link:hover {
-  text-decoration: underline;
+  color: #0366d6;
 }
 
 /**
@@ -149,6 +149,7 @@ a.link:hover {
 **/
 
 .post {
+  min-height: 220px;
   padding-bottom: 20px;
   margin-bottom: 10px;
   border-bottom: 1px dashed #d4d4d4;
@@ -635,32 +636,6 @@ a.link:hover {
   padding-bottom: 0.3em;
   font-size: 1.5em;
 }
-
-/* .markdown-body a.h2-link {
-  position: relative;
-  color: #24292e;
-}
-
-.markdown-body a.h2-link:hover {
-  color: #0366d6;
-}
-
-.markdown-body a.h2-link:before {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: -20px;
-  font-size: 18px;
-  content: "\e76c";
-}
-
-.markdown-body a.h2-link:hover:before {
-  display: block;
-}
-
-.markdown-body a h2 {
-  display: inline-block;
-} */
 
 .markdown-body h3 {
   font-size: 1.25em;

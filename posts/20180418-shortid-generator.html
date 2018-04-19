@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+  <meta name="description" content="Baffin lee的博客，分享技术文章">
+  <meta name="keywords" content="Baffin lee, 前端, JavaScript, 编程">
+  <title>短 ID 生成器 - Baffin Lee&#39;s blog</title>
+  <link rel="shortcut icon" href="/static/img/favicon.ico?v=1.0.1" type="image/x-icon">
+  <link rel="stylesheet" href="/static/css/app.css?v=1.0.1">
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="container clearfix">
+      <div class="site-name">
+          <a href="/">Baffin Lee</a>
+          <i class="iconfont icon-menu" id="mobile-menu"></i>
+        </div>
+        <ul class="nav clearfix" id="menu">
+          <li>
+            <a href="/">首页</a>
+          </li>
+          <li>
+            <a href="/categories">分类</a>
+          </li>
+          <li>
+            <a href="/tags">标签</a>
+          </li>
+          <li>
+            <a href="/series">系列</a>
+          </li>
+          <li>
+            <a href="/archives">归档</a>
+          </li>
+          <li>
+            <a href="/about.html">关于</a>
+          </li>
+        </ul>
+    </div>
+  </header>
+  <main class="main" id="main">
+    <div class="container">
+    <article class="markdown-body post page">
+      <h1 class="title">短 ID 生成器</h1>
+          <div class="meta">
+      <div>
+        <i class="iconfont icon-date"></i>
+        <span>2018-04-18</span>
+      </div>
+      <div>
+        <i class="iconfont icon-folder"></i>
+        
+        <a class="link" href="/categories/algorithm">算法</a>
+        
+      </div>
+      
+      
+    </div>
+      <p>最近研究了一下 URL 短链的生成，其中有个重要的部分是生成唯一的、不可预测的、尽量短的、url 友好的 id。我搜索了一下，看到有一个 JavaScript 库可以做到：<a target="_blank" href="https://github.com/dylang/shortid">shortid</a> 。看完源代码后，决定写篇文章分析一下短 id 生成中要注意的东西，以及其间利弊。</p>
+
+<p>我们的需求主要有四个：唯一、不可预测、短、url 友好，以下我们逐个分析一下。</p>
+<h2 id="url-友好"><a href="#url-友好" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>URL 友好</h2>
+<p>因为要生成短链，生成的 id 要放在 url 里使用，所以 url 友好是必须的。url 友好意味着生成的 id 里没有需要转义的字符，根据 <a target="_blank" href="https://zh.wikipedia.org/wiki/%E7%99%BE%E5%88%86%E5%8F%B7%E7%BC%96%E7%A0%81">规范</a>，只有以下 66 个字符：</p>
+<pre><code class="hljs">ABCDEFGHIJKLMNOPQRSTUVWXYZ
+abcdefghijklmnopqrstuvwxyz
+<span class="hljs-number">0123456789</span>
+-<span class="hljs-keyword">_</span>.~
+</code></pre>
+<h2 id="尽量短"><a href="#尽量短" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>尽量短</h2>
+<p>如果我们只用 0 ~ 9 的数字，每位有 10 种可能，六位最多能表示 <code>10^6</code> = <code>1000000</code> 种可能。这样就很浪费了不是吗？我们有 66 个字符可以用，全用上去的话，每位有 66 种可能，六位最多能表示 <code>66^6</code> = <code>82653950016</code> 种可能。</p>
+<p>所以要生成的 id 尽可能短的话，使用的字符要足够多，像 <a target="_blank" href="https://zh.wikipedia.org/wiki/%E9%80%9A%E7%94%A8%E5%94%AF%E4%B8%80%E8%AF%86%E5%88%AB%E7%A0%81">UUID</a> 使用 32 个 16 进制的字符表示的方式，在长度上其实就没什么性价比了，因为你用大约 21 个 64 进制的字符就能实现。确实也有一个库 <a target="_blank" href="https://github.com/ai/nanoid">Nano ID</a> 在做这件事，不过 UUID 还是有许多可取之处的，比如完全随机的 v4 版本，做到了真正的不可预测，这个等下会讲。</p>
+<h2 id="唯一"><a href="#唯一" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>唯一</h2>
+<p>唯一性的保证，有个简单的解决方案，就是递增，但是这样会让 id 变得可预测。时间戳方案也是延续递增的思想，不过会存在时间戳的碰撞问题，即某个时间戳需要生成多个 id 时，单纯的时间戳就不可靠了。还有就是 <a target="_blank" href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B8">哈希函数</a> 的方案了，哈希函数依然会有碰撞的问题。对于碰撞，一般会加上序号或者随机数来保证唯一。</p>
+<h2 id="不可预测"><a href="#不可预测" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>不可预测</h2>
+<p>可预测在很多时候可能没什么问题，但是当 id 的值暴露了你的用户或订单数量，或者被不怀好意的人猜到了别人的 id 进而实施攻击，那就是个大问题了。</p>
+<p>怎么保证不可预测呢？那就要添加随机数。常用的 <code>Math.random()</code> 随机数函数由于不是为密码安全而设计的，虽然快速，但是会存在 <a target="_blank" href="https://stackoverflow.com/questions/5651789/is-math-random-cryptographically-secure">安全问题</a>。我们需要考虑使用浏览器上的 <a target="_blank" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Crypto_API">Web Crypto API</a> 或 nodejs 里的 <a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/crypto.html">crypto 模块</a> 来生成随机数。</p>
+<h2 id="shortid-库httpsgithubcomdylangshortid"><a href="#shortid-库httpsgithubcomdylangshortid" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a><a target="_blank" href="https://github.com/dylang/shortid">shortid 库</a></h2>
+<p>接下来我们来看一下它是怎么做的。</p>
+<p>short id 可以分为三个模块，alphabet 管理字符集，负责打散它和找出某个位置对应的字符，可以重设字符集；encode 模块负责产生随机数，对指定的数进行随机处理，使得不可预测；build 模块负责管理算法的版本号、集群 ID （cluster）、时间戳以及时间戳重复时的序号。</p>
+<p><img src="https://baffinlee.duapp.com/20180418-shortid.png" alt="shortid 模块" /></p>
+<p>我画了一个简单的图来表示，版本号、集群 ID、时间戳、序号四个元素组合，可以保持唯一性；经过随机处理之后，可以保持不可预测性；然后去 64 位的字符集中查找相应的字符，字符集足够大并且对 url 友好。</p>
+<p>核心代码如下：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">build</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> str = <span class="hljs-string">''</span>;
+
+  str = str + encode(alphabet.lookup, version);
+  str = str + encode(alphabet.lookup, clusterWorkerId);
+  <span class="hljs-keyword">if</span> (counter &gt; <span class="hljs-number">0</span>) {
+      str = str + encode(alphabet.lookup, counter);
+  }
+  str = str + encode(alphabet.lookup, seconds);
+
+  <span class="hljs-keyword">return</span> str;
+}
+</code></pre>
+<p>其中有些亮点需要说明一下：</p>
+<ul>
+<li>算法版本号确保以后的扩展性，这个在 UUID 中也有体现</li>
+<li>集群 ID 作为一个 feature 以支持分布式的 id 生成器</li>
+<li>时间戳一般是 UTC 时间的 1970 年到现在的（毫）秒数，但是这样会很长，shortid（2.2.8 版本）里面是以 2016 年的某个时间（过去的时间）到现在的（毫）秒数作为时间戳，这样可以产生短小的时间戳，你也可以把时间戳当做跨平台的递增 id。当然这样只是曲线救国，随着时间的流逝，时间戳还是会越来越长。这时候版本号就派上用场了，你可以隔几年就同时更新一下时间戳基数和版本号</li>
+<li>短时间内生成大量 id ，则会造成时间戳重复，这时候就需要加上序号</li>
+<li>随机数生成尽量用浏览器上的 <a target="_blank" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Crypto_API">Web Crypto API</a> 或 nodejs 里的 <a target="_blank" href="https://nodejs.org/dist/latest-v8.x/docs/api/crypto.html">crypto 模块</a> 。</li>
+</ul>
+<p>shortid 在不可预测上做了许多努力。</p>
+<p>首先，字符集会被打散。</p>
+<p>然后，按理说，<code>version + clusterWorkerId + counter + seconds</code> 会产生一个确定的数，这样便可以预测，于是有了随机处理的环节。核心代码如下：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">encode</span>(<span class="hljs-params">lookup, number</span>) </span>{
+    <span class="hljs-keyword">var</span> loopCounter = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">var</span> done;
+
+    <span class="hljs-keyword">var</span> str = <span class="hljs-string">''</span>;
+
+    <span class="hljs-keyword">while</span> (!done) {
+        str = str + lookup( ( (number &gt;&gt; (<span class="hljs-number">4</span> * loopCounter)) &amp; <span class="hljs-number">0x0f</span> ) | randomByte() );
+        done = number &lt; (<span class="hljs-built_in">Math</span>.pow(<span class="hljs-number">16</span>, loopCounter + <span class="hljs-number">1</span> ) );
+        loopCounter++;
+    }
+
+    <span class="hljs-keyword">return</span> str;
+}
+</code></pre>
+<p>源代码的意思：short id 在生成的最终 id 里，每个字符其实只代表 <code>1 ~ 16</code> 共 16 种，然后用随机数生成器随机生成 <code>1 ~ 4</code> 的数，相乘，最后去 64 个字符组成的字符集里选字符。所以虽然每位是确定的数字，但是有 4 个字符可以随机选。我们以以下信息为例进行说明。</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-comment">// 版本号</span>
+version = <span class="hljs-number">1</span>;
+<span class="hljs-comment">// 集群 id</span>
+clusterWorkerId = <span class="hljs-number">2</span>;
+<span class="hljs-comment">// 时间戳序号</span>
+counter = <span class="hljs-number">3</span>;
+<span class="hljs-comment">// 时间戳</span>
+seconds = <span class="hljs-number">100</span>;
+<span class="hljs-comment">// 打散的字符集</span>
+shuffledAlphabet = <span class="hljs-string">'XF4SKlgAJ71EvPwyma9cipB5sCYe_Uux-RoqdIj0DMTtnfQ68VOWbrZHGz23kLNh'</span>;
+</code></pre>
+<p>比如版本号是 1 ，那它可以随机选 <code>0, 16, 32, 48</code> 位置的字符：<code>X, m, -, 8</code>；集群 id 是 2，那它可以随机选 <code>1, 17, 33, 49</code> 位置的字符：<code>F, a, R, V</code>。</p>
+<p>你可以运行以下代码，因为 <code>version + clusterWorkerId + counter + seconds</code> 里面 <code>version, clusterWorkerId, seconds</code> 三个是不变的，所以输出的字符里，除了代表 <code>counter</code> 的，都是在固定的 4 个字符里面随机选：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-comment">// npm i shortid</span>
+<span class="hljs-keyword">const</span> shortid = <span class="hljs-built_in">require</span>(<span class="hljs-string">'shortid'</span>);
+<span class="hljs-keyword">let</span> count = <span class="hljs-number">100</span>;
+<span class="hljs-keyword">while</span> (count--) {
+  <span class="hljs-built_in">console</span>.log(shortid.generate());
+}
+<span class="hljs-comment">/*
+r1Dvp0H3M
+rylDvaRShG
+rkWwP6CBhG
+S1MvwTAH2M
+B1QwvaRBnz
+H14PDaRS2M
+SyrDPpCrnf
+B18PPTAHnf
+HkwDDa0Bhz
+rJdvPTCShz
+HJFvPTRB2z
+BkqvvTRBnz
+HJsvwpCr3G
+By3vP60B3f
+BkTvwpCr3G
+BJ0ww6RShG
+HJJxwP60rhf
+rklgDvp0S2M
+Hk-lwD6RHhM
+r1zxwwaCrhf
+SJ7gPvpRr2z
+ByElvPT0HhG
+r1rlvP6RSnf
+rJIgPva0r2G
+HkDlvva0Bhz
+r1_gDv60rhG
+HktgPwaRBnz
+SyqewvT0HnG
+H1jevwaCB3G
+HkneDP6CHhG
+B1agvwT0SnG
+...
+*/</span>
+</code></pre>
+<p>总结一下这个库的弊端：</p>
+<p>数据量足够大的话，是可以分析出 <code>0 ~ 15</code> 分别有哪几个字符可以选，但是这样还是有 <code>4^id长度</code> 种可能，也算一定程度的不可预测。另外从生成的 id 反推其原始信息也很可能实现。而且当你打散或重设字符集之后，有可能会重复，只是概率非常非常低。</p>
+<p>由于随机性处理，生成的 id 其实只有 <code>16^id长度</code> 种可能，而不是 <code>64^id长度</code> 种。但是可以保证唯一。</p>
+<p>另外，shortid 不能保证生成 id 的长度，而且长度是随着时间的增长和并发量的增大而增大的。如果你要把生成的 id 写入数据库，可能要考虑这个问题。</p>
+<h2 id="总结"><a href="#总结" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>总结</h2>
+<p>简单介绍了一下短 id 的生成要考虑的问题，以及 shortid 库的原理、亮点及弊端。</p>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" href="https://github.com/dylang/shortid">shortid</a></li>
+<li><a target="_blank" href="https://github.com/ai/nanoid">nanoid</a></li>
+<li><a target="_blank" href="https://zh.wikipedia.org/zh-hans/通用唯一识别码">uuid</a></li>
+</ul>
+<p>（完）</p>    </article>
+    <div id="disqus_thread" class="disqus-comment" data-url="https://baffinlee.com/posts/20180418-shortid-generator.html" data-id="HyRFYEV2z">
+      <span>Disqus评论加载中</span>
+    </div>
+    </div>
+  </main>
+  <footer class="footer" id="footer">
+    <div class="container clearfix">
+      <div class="copyright">&copy; 2018 Baffin Lee.</div>
+      <div class="social">
+        <a class="link" href="https://github.com/baffinlee" target="_blank">GitHub</a>
+        <a class="link" href="/rss.xml" target="_blank">RSS</a>
+      </div>
+    </div>
+    <div id="return-top" class="return-top">
+      <a class="link" href="#header"><i class="iconfont icon-top"></i></a>
+    </div>
+  </footer>
+  <script src="/static/js/app.js?v=1.0.1"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115892357-1"></script>
+</body>
+</html>

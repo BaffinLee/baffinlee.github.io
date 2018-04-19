@@ -4,9 +4,17 @@
     <description><![CDATA[Baffin lee的博客，分享技术文章]]></description>
     <link>https://baffinlee.com</link>
     <generator>RSS for Node</generator>
-    <lastBuildDate>Fri, 30 Mar 2018 11:20:11 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 19 Apr 2018 09:58:24 GMT</lastBuildDate>
     <atom:link href="https://baffinlee.com/rss.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 30 Mar 2018 11:20:11 GMT</pubDate>
+    <pubDate>Thu, 19 Apr 2018 09:58:24 GMT</pubDate>
+    <item>
+      <title><![CDATA[短 ID 生成器]]></title>
+      <description><![CDATA[<p>最近研究了一下 URL 短链的生成，其中有个重要的部分是生成唯一的、不可预测的、尽量短的、url 友好的 id。我搜索了一下，看到有一个 JavaScript 库可以做到：<a target="_blank" href="https://github.com/dylang/shortid">shortid</a> 。看完源代码后，决定写篇文章分析一下短 id 生成中要注意的东西，以及其间利弊。</p>]]></description>
+      <link>https://baffinlee.com/posts/20180418-shortid-generator.html</link>
+      <guid isPermaLink="true">https://baffinlee.com/posts/20180418-shortid-generator.html</guid>
+      <category><![CDATA[算法]]></category>
+      <pubDate>Wed, 18 Apr 2018 03:20:37 GMT</pubDate>
+    </item>
     <item>
       <title><![CDATA[各种颜色类型及之间的转换]]></title>
       <description><![CDATA[<p>作为前端，写 css 时经常遇到颜色的设置。常见颜色格式有 <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords">CSS 命名颜色</a>、rgb、hex、hsl，不常用的 hwb、cmyk等，还有一些不能在 css 里用的，比如 lab、xyz。这篇文章简单介绍一下各种颜色类型，以及它们之间的转换。</p>]]></description>
