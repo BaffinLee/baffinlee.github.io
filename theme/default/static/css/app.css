@@ -32,7 +32,7 @@ article, header, nav, main, article, footer {
 
 a.link {
   text-decoration: none;
-  color: #555555;
+  color: #2d2d2d;
 }
 
 a.link:hover {
@@ -152,7 +152,6 @@ a.link:hover {
   min-height: 220px;
   padding-bottom: 20px;
   margin-bottom: 10px;
-  border-bottom: 1px dashed #d4d4d4;
 }
 
 .post:last-child {
@@ -630,15 +629,18 @@ a.link:hover {
 .markdown-body h1 {
   padding-bottom: 0.3em;
   font-size: 2em;
+  font-weight: 700;
 }
 
 .markdown-body h2 {
   padding-bottom: 0.3em;
   font-size: 1.5em;
+  font-weight: 500;
 }
 
 .markdown-body h3 {
   font-size: 1.25em;
+  font-weight: 500;
 }
 
 .markdown-body h4 {
