@@ -4,9 +4,17 @@
     <description><![CDATA[Baffin lee的博客，分享技术文章]]></description>
     <link>https://baffinlee.com</link>
     <generator>RSS for Node</generator>
-    <lastBuildDate>Thu, 19 Apr 2018 09:58:24 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 30 May 2018 09:54:56 GMT</lastBuildDate>
     <atom:link href="https://baffinlee.com/rss.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 19 Apr 2018 09:58:24 GMT</pubDate>
+    <pubDate>Wed, 30 May 2018 09:54:56 GMT</pubDate>
+    <item>
+      <title><![CDATA[一次性密码]]></title>
+      <description><![CDATA[<p>一次性密码，（One Time Password，简称 <code>OTP</code>），又称动态密码或单次有效密码。常见的二次验证程序，比如 <a target="_blank" href="https://zh.wikipedia.org/wiki/Google%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8">Google Authenticator</a> 使用的就是 <a target="_blank" href="https://zh.wikipedia.org/wiki/%E4%B8%80%E6%AC%A1%E6%80%A7%E5%AF%86%E7%A2%BC">OTP</a>。<code>OTP</code> 分两种，一种是基于时间的一次性密码，（Time-based One-Time Password，简称 <code>TOTP</code>；另一种是基于记次的一次性密码，（HMAC-based One-Time Password，简称 <code>HOTP</code>）。</p>]]></description>
+      <link>https://baffinlee.com/posts/20180530-one-timepassword.html</link>
+      <guid isPermaLink="true">https://baffinlee.com/posts/20180530-one-timepassword.html</guid>
+      <category><![CDATA[算法]]></category>
+      <pubDate>Wed, 30 May 2018 03:37:03 GMT</pubDate>
+    </item>
     <item>
       <title><![CDATA[短 ID 生成器]]></title>
       <description><![CDATA[<p>最近研究了一下 URL 短链的生成，其中有个重要的部分是生成唯一的、不可预测的、尽量短的、url 友好的 id。我搜索了一下，看到有一个 JavaScript 库可以做到：<a target="_blank" href="https://github.com/dylang/shortid">shortid</a> 。看完源代码后，决定写篇文章分析一下短 id 生成中要注意的东西，以及其间利弊。</p>]]></description>
