@@ -36,12 +36,12 @@ module.exports = class Cache {
   }
 
   addPost (post) {
-    this.data.posts.push(post)
+    this.data.posts.unshift(post)
     this.mapIt(post)
   }
 
   addPage (page) {
-    this.data.pages.push(page)
+    this.data.pages.unshift(page)
     this.mapIt(page)
   }
 
