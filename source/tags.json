@@ -8,6 +8,10 @@
     "slug": "nodejs"
   },
   {
+    "name": "eggjs",
+    "slug": "eggjs"
+  },
+  {
     "name": "tool",
     "slug": "tool"
   },
