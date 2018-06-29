@@ -4,9 +4,17 @@
     <description><![CDATA[Baffin lee的博客，分享技术文章]]></description>
     <link>https://baffinlee.com</link>
     <generator>RSS for Node</generator>
-    <lastBuildDate>Wed, 30 May 2018 09:54:56 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 29 Jun 2018 14:06:23 GMT</lastBuildDate>
     <atom:link href="https://baffinlee.com/rss.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 30 May 2018 09:54:56 GMT</pubDate>
+    <pubDate>Fri, 29 Jun 2018 14:06:23 GMT</pubDate>
+    <item>
+      <title><![CDATA[深入 Egg.js：项目启动流程]]></title>
+      <description><![CDATA[<p>最近有个小项目，在调研使用哪个 <code>Node.js</code> 后端框架，考虑到完善程度以及社区活跃性，最终我选择了 <a target="_blank" href="https://eggjs.org">Egg.js</a> 。带着好奇心，我粗略看了一下 <code>Egg.js</code> 的源代码，在此分享一下。考虑到涉及的东西比较多，准备分开几篇文章来写：项目启动流程、处理请求和优雅重启。</p>]]></description>
+      <link>https://baffinlee.com/posts/20180629-dive-into-eggjs-start-app.html</link>
+      <guid isPermaLink="true">https://baffinlee.com/posts/20180629-dive-into-eggjs-start-app.html</guid>
+      <category><![CDATA[nodejs]]></category>
+      <pubDate>Fri, 29 Jun 2018 09:30:05 GMT</pubDate>
+    </item>
     <item>
       <title><![CDATA[一次性密码]]></title>
       <description><![CDATA[<p>一次性密码，（One Time Password，简称 <code>OTP</code>），又称动态密码或单次有效密码。常见的二次验证程序，比如 <a target="_blank" href="https://zh.wikipedia.org/wiki/Google%E8%BA%AB%E4%BB%BD%E9%AA%8C%E8%AF%81%E5%99%A8">Google Authenticator</a> 使用的就是 <a target="_blank" href="https://zh.wikipedia.org/wiki/%E4%B8%80%E6%AC%A1%E6%80%A7%E5%AF%86%E7%A2%BC">OTP</a>。<code>OTP</code> 分两种，一种是基于时间的一次性密码，（Time-based One-Time Password，简称 <code>TOTP</code>；另一种是基于记次的一次性密码，（HMAC-based One-Time Password，简称 <code>HOTP</code>）。</p>]]></description>
