@@ -4,9 +4,9 @@
     <description><![CDATA[Baffin lee的博客，分享技术文章]]></description>
     <link>https://baffinlee.com</link>
     <generator>RSS for Node</generator>
-    <lastBuildDate>Fri, 29 Jun 2018 14:06:23 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 02 Jul 2018 10:16:25 GMT</lastBuildDate>
     <atom:link href="https://baffinlee.com/rss.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 29 Jun 2018 14:06:23 GMT</pubDate>
+    <pubDate>Mon, 02 Jul 2018 10:16:25 GMT</pubDate>
     <item>
       <title><![CDATA[深入 Egg.js：项目启动流程]]></title>
       <description><![CDATA[<p>最近有个小项目，在调研使用哪个 <code>Node.js</code> 后端框架，考虑到完善程度以及社区活跃性，最终我选择了 <a target="_blank" href="https://eggjs.org">Egg.js</a> 。带着好奇心，我粗略看了一下 <code>Egg.js</code> 的源代码，在此分享一下。考虑到涉及的东西比较多，准备分开几篇文章来写：项目启动流程、处理请求和优雅重启。</p>]]></description>
