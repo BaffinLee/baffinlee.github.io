@@ -1,5 +1,5 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "site": {
     "name": "Baffin Lee",
     "title": "Baffin Lee's blog",
@@ -22,7 +22,7 @@
     "page": "page"
 	},
 	"pageSize": {
-		"posts": 10,
+		"posts": 5,
     "tagsHome": -1,
 		"categoriesHome": -1,
     "seriesHome": 30,

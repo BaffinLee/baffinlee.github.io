@@ -201,7 +201,7 @@ module.exports = class Theme {
         list,
         paging: {
           count,
-          pageNow: now,
+          pageNow: page,
           pageSize: size,
           pageCount
         },

@@ -160,6 +160,7 @@ a.link:hover {
 }
 
 .post.page {
+  margin-top: 50px;
   margin-bottom: 50px;
 }
 
@@ -176,6 +177,11 @@ a.link:hover {
   margin-top: 10px;
   margin-bottom: 20px;
   color: #888888;
+}
+
+.post.page .meta {
+  margin-top: 20px;
+  margin-bottom: 50px;
 }
 
 .post.page .meta,
@@ -594,7 +600,7 @@ a.link:hover {
   margin-top: 24px;
   margin-bottom: 16px;
   font-weight: normal;
-  line-height: 1.25;
+  line-height: 2.5;
 }
 
 .markdown-body h1 .octicon-link,
