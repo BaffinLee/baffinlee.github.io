@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+  <meta name="description" content="Baffin lee的博客，分享技术文章">
+  <meta name="keywords" content="Baffin lee, 前端, JavaScript, 编程">
+  <title>使用 axios 的 adapter 优雅地 mock 数据 - Baffin Lee&#39;s blog</title>
+  <link rel="shortcut icon" href="/static/img/favicon.ico?v=1.0.3" type="image/x-icon">
+  <link rel="stylesheet" href="/static/css/app.css?v=1.0.3">
+</head>
+<body>
+  <header class="header" id="header">
+    <div class="container clearfix">
+      <div class="site-name">
+          <a href="/">Baffin Lee</a>
+          <i class="iconfont icon-menu" id="mobile-menu"></i>
+        </div>
+        <ul class="nav clearfix" id="menu">
+          <li>
+            <a href="/">首页</a>
+          </li>
+          <li>
+            <a href="/categories">分类</a>
+          </li>
+          <li>
+            <a href="/tags">标签</a>
+          </li>
+          <li>
+            <a href="/series">系列</a>
+          </li>
+          <li>
+            <a href="/archives">归档</a>
+          </li>
+          <li>
+            <a href="/about.html">关于</a>
+          </li>
+        </ul>
+    </div>
+  </header>
+  <main class="main" id="main">
+    <div class="container">
+    <article class="markdown-body post page">
+      <h1 class="title">使用 axios 的 adapter 优雅地 mock 数据</h1>
+          <div class="meta">
+      <div>
+        <i class="iconfont icon-date"></i>
+        <span>2018-07-03</span>
+      </div>
+      <div>
+        <i class="iconfont icon-folder"></i>
+        
+        <a class="link" href="/categories/front-end">前端</a>
+        
+      </div>
+      <div>
+        <i class="iconfont icon-tag"></i>
+        
+        <a class="link" href="/tags/js">js</a>
+        
+      </div>
+      
+    </div>
+      <p>前端开发阶段经常需要 <code>mock</code> 数据，这时候我们会用 <a target="_blank" href="http://mockjs.com/">Mock.js</a> 或者自己搭一个代理服务器进行数据的 <code>mock</code>。在项目中使用 <a target="_blank" href="https://github.com/axios/axios">axios</a> 进行 <code>ajax</code> 请求之后，我发现了一种优雅的 <code>mock</code> 数据的方式：使用 <code>axios</code> 的 <code>adapter</code> 机制。</p>
+
+<p>先介绍一下常用的 mock 数据方案：</p>
+<h2 id="mockjs"><a href="#mockjs" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>Mock.js</h2>
+<p><code>Mock.js</code> 的原理是使用封装了自己逻辑的 <code>XMLHttpRequest</code> 对象替换掉了浏览器内置的 <code>XMLHttpRequest</code> 对象，以此加入匹配 <code>url</code> 进行 <code>mock</code> 数据的逻辑。</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-comment">// see https://github.com/nuysoft/Mock/blob/c4d7cba01900b5c5bb8e3d474c8f5d07810ab72e/src/mock.js#L57-L58</span>
+
+<span class="hljs-comment">// 拦截 XHR</span>
+<span class="hljs-keyword">if</span> (XHR) <span class="hljs-built_in">window</span>.XMLHttpRequest = XHR
+</code></pre>
+<p><code>Mock.js</code> 的优点很明显：</p>
+<ol>
+<li>非常容易上手；</li>
+<li>而且自带了随机数据生成的功能，用得比较多。</li>
+</ol>
+<p>当然也是有缺点的：</p>
+<ol>
+<li>替换了浏览器内置的 <code>XMLHttpRequest</code> 对象，虽然说大部分情况下不会出什么问题，但是一旦发生问题，便是很隐晦的问题，难以排查；</li>
+<li>如果没注意开发与线上环境的区分的话，会把随机数据打包进入生产环境里，增大文件体积；</li>
+<li>另外，现在又有了一个新的方式来进行 <code>ajax</code> 请求，<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a>，难道又要自己封装一个 <code>fetch</code> 去替换掉浏览器默认的，来实现拦截请求做 <code>mock</code> 数据的逻辑？</li>
+</ol>
+<h2 id="代理服务器"><a href="#代理服务器" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>代理服务器</h2>
+<p>代理服务器即搭建一个测试数据的服务器，或者在实际服务器前面设一个代理，匹配到了特定的 <code>url</code> 就响应 <code>mock</code> 数据，没匹配就透传。</p>
+<p>代理服务器的优点有：</p>
+<ol>
+<li>灵活，可以自由地控制 <code>mock</code> 数据，特别是现在流行前端学习使用 <code>nodejs</code> 做全栈，适合前端去折腾；</li>
+<li>方便集中管理，可以整个公司或团队搭建一个 <code>mock</code> 数据服务器，作为一项服务提供给前端开发，前端开发可以去服务后台设置需要 <code>mock</code> 的 <code>url</code> 和具体数据。</li>
+</ol>
+<h2 id="axios-adapter"><a href="#axios-adapter" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>Axios Adapter</h2>
+<p>关于 <code>axios</code> 的 <code>adapter</code> 机制，可以看看 <a target="_blank" href="https://github.com/axios/axios/tree/master/lib/adapters">官方文档</a> 。</p>
+<p>简单来说，<code>axios</code> 的请求是交给 <code>adapter</code> 去实现的。默认有两个 <code>adapter</code>，在浏览器环境是 <code>xhr</code> 即 <code>XMLHttpRequest</code>，在 nodejs 上是 <code>http</code> 模块。这样就实现了兼容两个平台，并且提供一致的 api。而且 <code>adapter</code> 是可以由用户实现的，这就给我们 <code>mock</code> 数据提供了完美的途径。<code>adapter</code> 示例：</p>
+<pre><code class="hljs lang-javascript">axios({
+  <span class="hljs-attr">url</span>: <span class="hljs-string">''</span>,
+  <span class="hljs-attr">adapter</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">myAdapter</span>(<span class="hljs-params">config</span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>) </span>{
+      <span class="hljs-keyword">if</span> (someLogic) {
+        resolve({
+          <span class="hljs-attr">data</span>: responseData,
+          <span class="hljs-attr">status</span>: request.status,
+          <span class="hljs-attr">statusText</span>: request.statusText,
+          <span class="hljs-attr">headers</span>: responseHeaders,
+          <span class="hljs-attr">config</span>: config,
+          <span class="hljs-attr">request</span>: request
+        });
+      } <span class="hljs-keyword">else</span> {
+        reject(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>());
+      }
+    });
+  }
+});
+</code></pre>
+<p>我们只需要在开发环境，把 <code>adapter</code> 设为我们自己的实现，在里面加入 <code>mock</code> 逻辑。以下是示例代码：</p>
+<pre><code class="hljs lang-javascript"><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+<span class="hljs-keyword">const</span> instance = axios.create();
+
+<span class="hljs-comment">// mock services for dev</span>
+<span class="hljs-keyword">if</span> (process.env.NODE_ENV === <span class="hljs-string">'development'</span>) {
+  instance.defaults.originAdapter = instance.defaults.adapter;
+  instance.defaults.adapter = <span class="hljs-function">(<span class="hljs-params">config</span>) =&gt;</span> {
+    <span class="hljs-comment">// 判断是否需要 mock</span>
+    <span class="hljs-keyword">if</span> (config.url === <span class="hljs-string">'test'</span>) {
+      <span class="hljs-keyword">return</span> config.originAdapter(config);
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+      <span class="hljs-comment">// 从文件获取 mock 数据</span>
+      <span class="hljs-keyword">import</span>(<span class="hljs-string">'./mock/test.js'</span>).then(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> {
+        resolve({
+          <span class="hljs-attr">data</span>: res,
+          <span class="hljs-attr">status</span>: <span class="hljs-number">200</span>,
+          <span class="hljs-attr">statusText</span>: <span class="hljs-string">'OK'</span>,
+          <span class="hljs-attr">headers</span>: {},
+          config,
+          <span class="hljs-attr">request</span>: {},
+        });
+      }).catch(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {
+        reject(err);
+      });
+    });
+  };
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> instance;
+</code></pre>
+<h2 id="总结"><a href="#总结" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>总结</h2>
+<p>使用 <code>axios</code> 的 <code>adapter</code> 机制来实现 <code>mock</code> 数据的需求，既有 <code>Mock.js</code> 的简单容易上手的优点，又不需要替换浏览器内置的 <code>XMLHttpRequest</code> 对象，比较优雅。顺便一提，<code>axios</code> 的设计很值得学习，实例化、默认配置项、interceptor 和 adapter 机制都设计得很优雅，几乎在能自定义的地方都给了用户自由定制的方式，非常棒。</p>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" href="https://github.com/axios/axios">axios</a></li>
+<li><a target="_blank" href="http://mockjs.com">mockjs</a></li>
+<li><a target="_blank" href="https://github.com/axios/axios/tree/master/lib/adapters">adapter</a></li>
+</ul>
+<p>（完）</p>    </article>
+    <div id="disqus_thread" class="disqus-comment" data-url="https://baffinlee.com/posts/20180703-elegant-mock-using-axios-adapter.html" data-id="r1bZ8cdMQ">
+      <span>Disqus评论加载中</span>
+    </div>
+    </div>
+  </main>
+  <footer class="footer" id="footer">
+    <div class="container clearfix">
+      <div class="copyright">&copy; 2018 Baffin Lee.</div>
+      <div class="social">
+        <a class="link" href="https://github.com/baffinlee" target="_blank">GitHub</a>
+        <a class="link" href="/rss.xml" target="_blank">RSS</a>
+      </div>
+    </div>
+    <div id="return-top" class="return-top">
+      <a class="link" href="#header"><i class="iconfont icon-top"></i></a>
+    </div>
+  </footer>
+  <script src="/static/js/app.js?v=1.0.3"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115892357-1"></script>
+</body>
+</html>

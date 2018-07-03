@@ -4,9 +4,17 @@
     <description><![CDATA[Baffin lee的博客，分享技术文章]]></description>
     <link>https://baffinlee.com</link>
     <generator>RSS for Node</generator>
-    <lastBuildDate>Mon, 02 Jul 2018 10:16:25 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 03 Jul 2018 10:35:29 GMT</lastBuildDate>
     <atom:link href="https://baffinlee.com/rss.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 02 Jul 2018 10:16:25 GMT</pubDate>
+    <pubDate>Tue, 03 Jul 2018 10:35:29 GMT</pubDate>
+    <item>
+      <title><![CDATA[使用 axios 的 adapter 优雅地 mock 数据]]></title>
+      <description><![CDATA[<p>前端开发阶段经常需要 <code>mock</code> 数据，这时候我们会用 <a target="_blank" href="http://mockjs.com/">Mock.js</a> 或者自己搭一个代理服务器进行数据的 <code>mock</code>。在项目中使用 <a target="_blank" href="https://github.com/axios/axios">axios</a> 进行 <code>ajax</code> 请求之后，我发现了一种优雅的 <code>mock</code> 数据的方式：使用 <code>axios</code> 的 <code>adapter</code> 机制。</p>]]></description>
+      <link>https://baffinlee.com/posts/20180703-elegant-mock-using-axios-adapter.html</link>
+      <guid isPermaLink="true">https://baffinlee.com/posts/20180703-elegant-mock-using-axios-adapter.html</guid>
+      <category><![CDATA[前端]]></category>
+      <pubDate>Tue, 03 Jul 2018 06:21:45 GMT</pubDate>
+    </item>
     <item>
       <title><![CDATA[深入 Egg.js：项目启动流程]]></title>
       <description><![CDATA[<p>最近有个小项目，在调研使用哪个 <code>Node.js</code> 后端框架，考虑到完善程度以及社区活跃性，最终我选择了 <a target="_blank" href="https://eggjs.org">Egg.js</a> 。带着好奇心，我粗略看了一下 <code>Egg.js</code> 的源代码，在此分享一下。考虑到涉及的东西比较多，准备分开几篇文章来写：项目启动流程、处理请求和优雅重启。</p>]]></description>
