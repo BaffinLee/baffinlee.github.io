@@ -235,6 +235,13 @@ a.link:hover {
   font-size: 26px;
 }
 
+@media screen and (max-width: 650px) {
+  .return-top {
+    right: 20px;
+    bottom: 60px;
+  }
+}
+
 .disqus-comment {
   min-height: 100px;
   text-align: center;
@@ -322,6 +329,8 @@ a.link:hover {
 }
 
 .markdown-body .octicon {
+  position: absolute;
+  transform: translate(4px, 25px);
   display: inline-block;
   vertical-align: text-top;
   fill: currentColor;

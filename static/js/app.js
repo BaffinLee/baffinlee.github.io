@@ -6,7 +6,7 @@
   var menuOpened = false;
   var menuDom = document.getElementById('menu');
   var menuBtnDom = document.getElementById('mobile-menu');
-  var initDisqus = function (url, id) {
+  var initDisqus = function (url, id, shortname) {
     var d = document;
     var s = d.createElement('script');
 
@@ -15,7 +15,7 @@
       this.page.identifier = id;
     };
 
-    s.src = 'https://baffinlee.disqus.com/embed.js';
+    s.src = 'https://' + shortname + '.disqus.com/embed.js';
     s.setAttribute('data-timestamp', +new Date());
     (d.head || d.body).appendChild(s);
   };
@@ -36,7 +36,7 @@
       !disqusInited &&
       (document.body.clientHeight - window.innerHeight - top < 50)) {
       disqusInited = true;
-      initDisqus(disqusDom.dataset.url, disqusDom.dataset.id);
+      initDisqus(disqusDom.dataset.url, disqusDom.dataset.id, disqusDom.dataset.shortname);
     }
   };
   var openMenu = function () {
@@ -44,10 +44,13 @@
     menuOpened = !menuOpened;
   };
 
-  window.dataLayer = [
-    ['js', new Date()],
-    ['config', 'UA-115892357-1']
-  ];
+  var gtagScript = document.getElementById('gtag-script');
+  if (gtagScript) {
+    window.dataLayer = [
+      ['js', new Date()],
+      ['config', gtagScript.dataset.gtag]
+    ];
+  }
 
   if (menuDom && menuBtnDom) menuBtnDom.onclick = openMenu;
   if (returnTopDom || disqusDom) {

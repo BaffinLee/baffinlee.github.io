@@ -2,7 +2,7 @@
   </main>
   <footer class="footer" id="footer">
     <div class="container clearfix">
-      <div class="copyright">&copy; 2018 Baffin Lee.</div>
+      <div class="copyright">&copy; <%= app.moment().format('YYYY') %> <%= app.config.site.name %>.</div>
       <div class="social">
         <a class="link" href="<%= app.config.theme.config.github %>" target="_blank">GitHub</a>
         <a class="link" href="<%= app.url.rss() %>" target="_blank">RSS</a>
@@ -14,6 +14,8 @@
   </footer>
   <%_ app.config.inject.body -%>
   <script src="<%= app.url.static('js/app.js') %>"></script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=<%= app.config.theme.config.gaId %>"></script>
+  <% if (app.config.theme.config.gaId) { %>
+  <script id="gtag-script" async src="https://www.googletagmanager.com/gtag/js?id=<%= app.config.theme.config.gaId %>" data-gtag="<%= app.config.theme.config.gaId %>"></script>
+  <% } %>
 </body>
 </html>

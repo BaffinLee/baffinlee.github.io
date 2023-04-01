@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "site": {
     "name": "Baffin Lee",
     "title": "Baffin Lee's blog",
@@ -26,8 +26,8 @@
     "tagsHome": -1,
 		"categoriesHome": -1,
     "seriesHome": 30,
-    "tag": 30,
-    "category": 30,
+    "tags": 30,
+    "categories": 30,
 		"series": 30,
     "archives": 30,
     "rss": 10
@@ -40,6 +40,7 @@
     "name": "default",
     "config": {
       "github": "https://github.com/baffinlee",
+      "disqusShortName": "https-baffinlee-com",
       "gaId": "UA-115892357-1"
     }
   }

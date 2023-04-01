@@ -19,3 +19,14 @@ yarn build
 # preview
 yarn preview
 ```
+
+## change styles
+```bash
+# editor styles and templates in ./theme and version in ./config.json
+# clear cache
+yarn clear:cache
+# build it
+yarn build
+# preview
+yarn preview
+```
