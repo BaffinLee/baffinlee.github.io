@@ -27,8 +27,8 @@ const config = {
     tagsHome: -1,
     categoriesHome: -1,
     seriesHome: 30,
-    tag: 30,
-		categorie: 30,
+    tags: 30,
+		categories: 30,
 		series: 30,
     archives: 30,
     rss: 10

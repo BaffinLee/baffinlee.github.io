@@ -109,7 +109,7 @@ module.exports = class Theme {
   }
 
   compileTag (tag, posts, globalData) {
-    const size = config.pageSize.tag
+    const size = config.pageSize.tags
     const dir = path.join(this.paths.tags, tag.slug)
     fse.ensureDirSync(dir)
     this.paging(
@@ -142,7 +142,7 @@ module.exports = class Theme {
   }
 
   compileCategory (category, posts, globalData) {
-    const size = config.pageSize.category
+    const size = config.pageSize.categories
     const dir = path.join(this.paths.categories, category.slug)
     fse.ensureDirSync(dir)
     this.paging(
@@ -174,7 +174,7 @@ module.exports = class Theme {
     )
   }
 
-  copySaticFiles () {
+  copyStaticFiles () {
     const themeStatic = path.join(themeHome, 'static')
     fse.copySync(themeStatic, this.paths.static)
   }

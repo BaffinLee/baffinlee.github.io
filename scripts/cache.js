@@ -60,7 +60,7 @@ module.exports = class Cache {
     })
   }
 
-  analyseData () {
+  analyzeData () {
     this.data.categories = {}
     this.data.series = {}
     this.data.tags = {}

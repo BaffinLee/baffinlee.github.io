@@ -24,7 +24,7 @@ module.exports = class Meta {
       })
     });
     this.map.categories = {}
-    this._walkCategoryChildrens(this.data.categories, (item, parent) => {
+    this._walkCategoryChildren(this.data.categories, (item, parent) => {
       this.map.categories[item.name] = {
         name: item.name,
         slug: item.slug,
@@ -113,11 +113,11 @@ module.exports = class Meta {
     return this.data[type]
   }
 
-  _walkCategoryChildrens (data, cb, parent = null) {
+  _walkCategoryChildren (data, cb, parent = null) {
     if (data && typeof data === 'object' && data.length) {
       data.forEach(item => {
         cb(item, parent)
-        this._walkCategoryChildrens(item.childrens, cb, item)
+        this._walkCategoryChildren(item.children, cb, item)
       })
     }
   }

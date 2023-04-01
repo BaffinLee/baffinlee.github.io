@@ -187,7 +187,7 @@ function publishRss () {
   fs.writeFileSync(`${dir}/rss.xml`, rss.xml({ indent: '  ' }) + '\n')
 }
 
-function copySaticFiles () {
+function copyStaticFiles () {
   fse.copySync(
     path.join(__dirname, '../static'),
     path.join(__dirname, '../', blogConfig.output.public, blogConfig.output.static)
@@ -197,15 +197,15 @@ function copySaticFiles () {
 function publish () {
   publishPosts(pagesPath, true)
   publishPosts(postsPath, false)
-  cache.analyseData()
+  cache.analyzeData()
   publishHome()
   publishCategories()
   publishSeries()
   publishTags()
   publishArchives()
   publishRss()
-  copySaticFiles()
-  theme.copySaticFiles()
+  copyStaticFiles()
+  theme.copyStaticFiles()
 }
 
 try {

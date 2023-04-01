@@ -2,7 +2,7 @@
   {
     "name": "前端",
     "slug": "front-end",
-    "childrens": [
+    "children": [
       {
         "name": "nodejs",
         "slug": "nodejs"
@@ -12,11 +12,11 @@
   {
     "name": "设计",
     "slug": "design",
-    "childrens": []
+    "children": []
   },
   {
     "name": "算法",
     "slug": "algorithm",
-    "childrens": []
+    "children": []
   }
 ]
