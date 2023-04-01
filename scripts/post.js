@@ -8,7 +8,7 @@ const renderCode = function (code, lang) {
   let cls = ''
   try {
     html = lang
-      ? hljs.highlight(lang, str).value
+      ? hljs.highlight(str, { language: lang }).value
       : hljs.highlightAuto(str).value
   } catch (e) {
     html = hljs.highlightAuto(str).value
