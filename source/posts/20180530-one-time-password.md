@@ -112,7 +112,7 @@ period: TYPE 是 totp 时可选，时间周期，默认 30 秒。
 
 示例二维码：
 
-![qrcode](https://baffinlee.duapp.com/20180530-otp-qrcode.png)
+![qrcode](../images/20180530-otp-qrcode.png)
 
 # 总结
 

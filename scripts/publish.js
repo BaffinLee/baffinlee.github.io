@@ -19,6 +19,7 @@ const cache = new Cache(meta)
 const theme = new Theme()
 const pagesPath = path.join(__dirname, '../source/pages')
 const postsPath = path.join(__dirname, '../source/posts')
+const imagesPath = path.join(__dirname, '../source/images')
 const spinner = ora({ color: 'blue' })
 const globalData = {
   config: blogConfig,
@@ -191,6 +192,10 @@ function copyStaticFiles () {
   fse.copySync(
     path.join(__dirname, '../static'),
     path.join(__dirname, '../', blogConfig.output.public, blogConfig.output.static)
+  )
+  fse.copySync(
+    path.join(imagesPath),
+    path.join(__dirname, '../', blogConfig.output.public, blogConfig.output.static, 'images')
   )
 }
 

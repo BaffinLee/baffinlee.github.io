@@ -2,6 +2,8 @@ const fs = require('fs')
 const crypto = require('crypto')
 const showdown  = require('showdown')
 const hljs = require('highlight.js')
+const path = require('path')
+const config = require(path.resolve(__dirname, './config.js'));
 const renderCode = function (code, lang) {
   const str = code.replace(/¨D/g, '$');
   let html = ''
@@ -44,6 +46,16 @@ const renderer = new showdown.Converter({
           type: 'output',
           regex: /<a\s+href="/g,
           replace: '<a target="_blank" href="'
+        },
+        {
+          type: 'output',
+          regex: /<img\s+src="(.+?)"/g,
+          replace: (_, src) => {
+            if (src.startsWith('../images/')) {
+              src = src.replace('../images/', `/${config.output.static}/images/`);
+            }
+            return `<img loading="lazy" src="${src}"`;
+          }
         },
         {
           type: 'output',
