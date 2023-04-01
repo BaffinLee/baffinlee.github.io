@@ -3,16 +3,16 @@
   "version": "0.0.1",
   "description": "Baffin Lee's blog.",
   "scripts": {
-    "init": "npm install && node scripts/publish.js",
+    "init": "yarn && node scripts/publish.js",
     "new:page": "node scripts/new.js page",
     "new:post": "node scripts/new.js post",
-    "publish": "node scripts/publish.js",
+    "build": "node scripts/publish.js",
     "preview": "http-server"
   },
   "author": "Baffin Lee",
   "license": "ISC",
   "private": true,
-  "homepage": "https://github.com/BaffinLee/fileblog#readme",
+  "homepage": "https://github.com/BaffinLee/baffinlee.github.io",
   "engines": {
     "node": ">=8.0.0",
     "npm": ">=5.0.0"
@@ -22,7 +22,7 @@
     "ejs": "^2.5.7",
     "fs-extra": "^5.0.0",
     "highlight.js": "^9.12.0",
-    "http-server": "^0.11.1",
+    "http-server": "^14.1.1",
     "moment": "^2.21.0",
     "ora": "^1.4.0",
     "rss": "^1.2.2",

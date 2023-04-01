@@ -5,17 +5,17 @@
 ## setup
 ```bash
 # install
-npm run init
+yarn init
 ```
 
 ## write blog
 ```bash
 # generate a new post template
-npm run new:post
+yarn new:post
 # or generate a new page template
-npm run new:page
-# publish it
-npm run publish
+yarn new:page
+# build it
+yarn build
 # preview
-npm run preview
+yarn preview
 ```
