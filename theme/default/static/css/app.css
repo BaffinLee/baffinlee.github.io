@@ -54,7 +54,9 @@ a.link:hover {
 
 .header .site-name {
   float: left;
-  font-size: 28px;
+  font-size: 20px;
+  font-style: italic;
+  font-family: fantasy, sans-serif;
 }
 
 .header .site-name a {
@@ -176,26 +178,26 @@ a.link:hover {
 .post .meta {
   margin-top: 10px;
   margin-bottom: 20px;
-  color: #888888;
+  color: #6a6a6a;
 }
 
 .post.page .meta {
   margin-top: 20px;
-  margin-bottom: 50px;
+  margin-bottom: 60px;
 }
 
 .post.page .meta,
 .post.page .title {
   display: block;
-  text-align: center;
 }
 
 .post .meta a {
-  color: #888888;
+  color: #6a6a6a;
 }
 
 .post .meta div {
   display: inline-block;
+  margin-right: 5px;
 }
 
 .post .meta a:after {
@@ -305,6 +307,13 @@ a.link:hover {
 
 .footer .social a {
   margin-left: 10px;
+}
+
+@media screen and (max-width: 650px) {
+  .footer .container {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
 }
 
 /**
@@ -445,6 +454,7 @@ a.link:hover {
 .markdown-body p {
   margin-top: 0;
   margin-bottom: 10px;
+  line-height: 1.8;
 }
 
 .markdown-body blockquote {
@@ -1029,7 +1039,7 @@ a.link:hover {
     float: initial;
     padding: 0 2.5%;
     box-sizing: border-box;
-    font-size: 20px;
+    font-size: 18px;
     background-color: #fff;
     z-index: 5;
   }
@@ -1069,16 +1079,22 @@ a.link:hover {
   }
 
   .main {
-    min-height: calc(100vh - 134px);
+    min-height: calc(100vh - 102px);
+    padding-bottom: 20px;
   }
 
   .markdown-body {
+    margin-top: 10px!important;
     font-size: 14px;
   }
 
   .post .title {
     font-size: 26px;
     line-height: 34px;
+  }
+
+  .post.page .meta {
+    margin-bottom: 40px;
   }
 }
 

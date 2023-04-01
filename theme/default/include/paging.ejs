@@ -1,6 +1,6 @@
     <% if (app.paging.pageCount > 1) { %><ul class="paging clearfix">
       <% if (app.paging.pageNow > 1) { %><li class="prev">
-        <a href="<%= app.pagingUrl(app.paging.pageNow - 1) %>">
+        <a href="<%= app.pagingUrl(app.paging.pageNow - 1) %>" aria-label="上一页">
           <i class="iconfont icon-left"></i>
         </a>
       </li><% } %>
@@ -28,7 +28,7 @@
         <a href="<%= app.pagingUrl(app.paging.pageCount) %>"><%= app.paging.pageCount %></a>
       </li><% } %>
       <% if (app.paging.pageNow < app.paging.pageCount) { %><li class="next">
-        <a href="<%= app.pagingUrl(app.paging.pageNow + 1) %>">
+        <a href="<%= app.pagingUrl(app.paging.pageNow + 1) %>" aria-label="下一页">
             <i class="iconfont icon-right"></i>
         </a>
       </li><% } %>

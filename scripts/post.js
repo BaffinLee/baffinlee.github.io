@@ -49,7 +49,7 @@ const renderer = new showdown.Converter({
           type: 'output',
           regex: /<h2\s+id="(.+?)"\s*>(.+?)<\/h2>/g,
           replace: (_, id, str) => {
-            return `<h2 id="${id}"><a href="#${id}" class="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>${str}</h2>`;
+            return `<h2 id="${id}"><a href="#${id}" class="anchor" aria-label="anchor"><i class="iconfont icon-link octicon octicon-link"></i></a>${str}</h2>`;
           }
         },
         {

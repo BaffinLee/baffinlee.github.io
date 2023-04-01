@@ -213,7 +213,7 @@ try {
   cache.sync()
   spinner.succeed('all done!')
   console.log()
-  console.log(`  run ${chalk.blue('npm run preview')} to preview your blog.`)
+  console.log(`  run ${chalk.blue('yarn preview')} to preview your blog.`)
   console.log()
 } catch (err) {
   spinner.fail()
