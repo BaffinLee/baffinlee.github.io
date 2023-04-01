@@ -1,6 +1,5 @@
 const path = require('path')
 const config = {
-  version: '',
   site: {
     name: '',
     title: '',

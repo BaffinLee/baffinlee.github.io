@@ -1,6 +1,10 @@
 const path = require('path')
 const moment = require('moment')
+const crypto = require('crypto')
+const fs = require('fs')
 const config = require(path.join(__dirname, './config'))
+
+const staticFileHashMap = {};
 
 module.exports = {
   home (page = 0) {
@@ -19,7 +23,13 @@ module.exports = {
     return this.for('series', slug, page)
   },
   static (file) {
-    return `/${config.output.static}/${file}?v=${config.version}`
+    if (!staticFileHashMap[file]) {
+      const hash = crypto.createHash('sha1')
+      const fileContent = fs.readFileSync(path.resolve(__dirname, `../${config.output.public}/${config.output.static}/${file}`))
+      hash.update(fileContent)
+      staticFileHashMap[file] = hash.digest('hex').slice(0, 13)
+    }
+    return `/${config.output.static}/${file}?v=${staticFileHashMap[file]}`
   },
   for (type, slug, page) {
     let url = `/${config.output[type]}`

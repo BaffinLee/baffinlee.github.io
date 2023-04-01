@@ -91,6 +91,8 @@ module.exports = class Cache {
     fse.writeJSONSync(this.cacheFile, {
       pages: this.data.pages,
       posts: this.data.posts
+    }, {
+      spaces: 2,
     })
   }
 }

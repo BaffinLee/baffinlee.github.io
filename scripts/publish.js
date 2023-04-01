@@ -195,6 +195,8 @@ function copyStaticFiles () {
 }
 
 function publish () {
+  copyStaticFiles()
+  theme.copyStaticFiles()
   publishPosts(pagesPath, true)
   publishPosts(postsPath, false)
   cache.analyzeData()
@@ -204,8 +206,6 @@ function publish () {
   publishTags()
   publishArchives()
   publishRss()
-  copyStaticFiles()
-  theme.copyStaticFiles()
 }
 
 try {

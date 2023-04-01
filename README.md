@@ -20,9 +20,9 @@ yarn build
 yarn preview
 ```
 
-## change styles
+## change styles/templates
 ```bash
-# editor styles and templates in ./theme and version in ./config.json
+# edit styles and templates
 # clear cache
 yarn clear:cache
 # build it
