@@ -1,6 +1,6 @@
 <%- include('include/header') -%>
     <div class="site-tags">
-      <h2><%= app.category.name %><span> - 分类</span></h2>
+      <h2><%= app.category.name %><span> - <%- app.i18n.translatable('Category') %></span></h2>
       <ul>
         <% app.list.forEach(post => { %><li>
           <span class="date"><%= app.moment(post.publishedAt).format('YYYY-MM-DD') %></span>

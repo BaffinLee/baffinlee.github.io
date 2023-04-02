@@ -1,9 +1,13 @@
-const path = require('path')
-const moment = require('moment')
-const urlBuilder = require(path.join(__dirname, './url'))
-const categories = require(path.join(__dirname, '../source/categories'))
-const series = require(path.join(__dirname, '../source/series'))
-const tags = require(path.join(__dirname, '../source/tags'))
+const { safeRequire } = require('./utils');
+const categories = safeRequire('../source/categories')
+const series = safeRequire('../source/series')
+const tags = safeRequire('../source/tags')
+
+function getI18nNameKeys(obj) {
+  return Object.keys(obj).filter(key => {
+    return /^name([A-Z][a-zA-Z]+)?$/.test(key)
+  })
+}
 
 module.exports = class Meta {
   constructor () {
@@ -20,16 +24,22 @@ module.exports = class Meta {
     }
     arr.forEach(type => {
       this.data[type].forEach(item => {
-        this.map[type][item.name] = item
+        const i18nNameKeys = getI18nNameKeys(item)
+        i18nNameKeys.forEach(nameKey => {
+          this.map[type][item[nameKey]] = item
+        })
       })
     });
     this.map.categories = {}
     this._walkCategoryChildren(this.data.categories, (item, parent) => {
-      this.map.categories[item.name] = {
-        name: item.name,
-        slug: item.slug,
-        parent
-      }
+      const i18nNameKeys = getI18nNameKeys(item)
+      i18nNameKeys.forEach(nameKey => {
+        this.map.categories[item[nameKey]] = {
+          ...item,
+          children: undefined,
+          parent
+        }
+      })
     })
   }
 

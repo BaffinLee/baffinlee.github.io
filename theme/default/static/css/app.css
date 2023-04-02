@@ -56,7 +56,7 @@ a.link:hover {
   float: left;
   font-size: 20px;
   font-style: italic;
-  font-family: fantasy, sans-serif;
+  font-family: "Vladimir Script", "Snell Roundhand", "LingWai SC", "Apple Chancery", Trattatello, "Chiller", "Bradley Hand ITC", "Forte", "Lucida Handwriting", "Agency FB", "Gloucester MT Extra Condensed", fantasy, sans-serif;
 }
 
 .header .site-name a {

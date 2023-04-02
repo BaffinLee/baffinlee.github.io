@@ -57,4 +57,7 @@
     scrollHandler();
     window.onscroll = scrollHandler;
   }
+
+  var a = document.querySelector('.markdown-body.post.page .title');
+  a && (a.textContent = '111');
 })();

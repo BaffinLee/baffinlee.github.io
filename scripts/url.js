@@ -2,7 +2,7 @@ const path = require('path')
 const moment = require('moment')
 const crypto = require('crypto')
 const fs = require('fs')
-const config = require(path.join(__dirname, './config'))
+const config = require('./config')
 
 const staticFileHashMap = {};
 

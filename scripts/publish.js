@@ -1,22 +1,23 @@
 const fs = require('fs')
 const fse = require('fs-extra')
 const path = require('path')
-const util = require('util')
 const ora = require('ora')
 const chalk = require('chalk')
 const RSS = require('rss')
 const moment = require('moment')
-const blogConfig = require(path.join(__dirname, './config'))
-const urlBuilder = require(path.join(__dirname, './url'))
-const Post = require(path.join(__dirname, './post'))
-const Meta = require(path.join(__dirname, './meta'))
-const Cache = require(path.join(__dirname, './cache'))
-const Theme = require(path.join(__dirname, './theme'))
+const blogConfig = require('./config')
+const urlBuilder = require('./url')
+const Post = require('./post')
+const Meta = require('./meta')
+const Cache = require('./cache')
+const Theme = require('./theme')
+const I18n = require('./i18n')
 
 const post = new Post()
 const meta = new Meta()
 const cache = new Cache(meta)
 const theme = new Theme()
+const i18n = new I18n()
 const pagesPath = path.join(__dirname, '../source/pages')
 const postsPath = path.join(__dirname, '../source/posts')
 const imagesPath = path.join(__dirname, '../source/images')
@@ -24,6 +25,7 @@ const spinner = ora({ color: 'blue' })
 const globalData = {
   config: blogConfig,
   url: urlBuilder,
+  i18n,
   moment
 }
 const changed = {

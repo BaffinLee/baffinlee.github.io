@@ -1,4 +1,5 @@
-const path = require('path')
+const { safeRequire } = require('./utils');
+const mergeWidth = require('lodash/mergeWith')
 const config = {
   site: {
     name: '',
@@ -22,7 +23,7 @@ const config = {
     page: 'page'
 	},
 	pageSize: {
-		posts: 10,
+		posts: 5,
     tagsHome: -1,
     categoriesHome: -1,
     seriesHome: 30,
@@ -36,10 +37,15 @@ const config = {
     header: '',
     body: ''
   },
+  defaultLang: 'en',
   theme: {
     name: 'default',
     config: {}
   }
 }
 
-module.exports = Object.assign(config, require(path.join(__dirname, '../config')))
+module.exports = mergeWidth(config, safeRequire('../config'), (objValue, srcValue) => {
+  if (Array.isArray(objValue)) {
+    return srcValue
+  }
+})

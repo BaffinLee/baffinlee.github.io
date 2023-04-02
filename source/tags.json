@@ -20,7 +20,8 @@
     "slug": "cli"
   },
   {
-    "name": "颜色",
+    "name": "color",
+    "nameZh": "颜色",
     "slug": "color"
   }
 ]

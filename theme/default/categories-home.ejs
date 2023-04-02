@@ -1,6 +1,6 @@
 <%- include('include/header') -%>
     <div class="site-tags">
-      <h2>分类</h2>
+      <h2><%- app.i18n.translatable('Category') %></h2>
       <ul>
         <% app.list.forEach(category => { %><li>
           <a href="<%= app.url.categories(category.slug) %>"><%= category.name %></a>

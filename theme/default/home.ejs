@@ -5,7 +5,7 @@
       <div class="markdown-body">
         <%- post.excerpt -%>
       </div>
-      <a class="read-more link" href="<%= app.url.post(post) %>">阅读更多&gt;&gt;</a>
+      <a class="read-more link" href="<%= app.url.post(post) %>"><%- app.i18n.translatable('More') %>&gt;&gt;</a>
     </article><% }) %>
     <%- include('include/paging', {
       pagingUrl (page = 0) {

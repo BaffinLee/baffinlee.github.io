@@ -1,6 +1,6 @@
 <%- include('include/header') -%>
     <div class="site-tags">
-      <h2>标签</h2>
+      <h2><%- app.i18n.translatable('Tags') %></h2>
       <ul>
         <% app.list.forEach(tag => { %><li>
           <a href="<%= app.url.tags(tag.slug) %>"><%= tag.name %></a>

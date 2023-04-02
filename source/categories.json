@@ -1,6 +1,7 @@
 [
   {
-    "name": "前端",
+    "name": "Frontend",
+    "nameZh": "前端",
     "slug": "front-end",
     "children": [
       {
@@ -10,12 +11,14 @@
     ]
   },
   {
-    "name": "设计",
+    "name": "Design",
+    "nameZh": "设计",
     "slug": "design",
     "children": []
   },
   {
-    "name": "算法",
+    "name": "Algorithm",
+    "nameZh": "算法",
     "slug": "algorithm",
     "children": []
   }

@@ -4,15 +4,21 @@
     <div class="container clearfix">
       <div class="copyright">&copy; <%= app.moment().format('YYYY') %> <%= app.config.site.name %>.</div>
       <div class="social">
-        <a class="link" href="<%= app.config.theme.config.github %>" target="_blank">GitHub</a>
-        <a class="link" href="<%= app.url.rss() %>" target="_blank">RSS</a>
+        <% if (app.config.theme.config.github) { %>
+        <a class="link" href="<%= app.config.theme.config.github %>" target="_blank">
+          <%- app.i18n.translatable('GitHub') %>
+        </a>
+        <% } %>
+        <a class="link" href="<%= app.url.rss() %>" target="_blank">
+          <%- app.i18n.translatable('RSS') %>
+        </a>
       </div>
     </div>
     <div id="return-top" class="return-top">
       <a class="link" href="#header"><i class="iconfont icon-top"></i></a>
     </div>
   </footer>
-  <%_ app.config.inject.body -%>
+  <%- app.config.inject.body -%>
   <script src="<%= app.url.static('js/app.js') %>"></script>
   <% if (app.config.theme.config.gaId) { %>
   <script id="gtag-script" async src="https://www.googletagmanager.com/gtag/js?id=<%= app.config.theme.config.gaId %>" data-gtag="<%= app.config.theme.config.gaId %>"></script>

@@ -6,7 +6,7 @@
     </article>
     <% if (app.config.theme.config.disqusShortName) { %>
     <div id="disqus_thread" class="disqus-comment" data-url="<%= app.config.site.url + app.post.url %>" data-id="<%= app.post.id %>" data-shortname="<%= app.config.theme.config.disqusShortName %>">
-      <span>Disqus评论加载中</span>
+      <%- app.i18n.translatable('Comment loading') %>
     </div>
     <% } %>
 <%- include('include/footer') -%>
