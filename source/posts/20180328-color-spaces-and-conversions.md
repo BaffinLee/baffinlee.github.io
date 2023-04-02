@@ -41,7 +41,7 @@
 
 RGB 即红绿蓝，也被称为三原色。RGB 颜色模型是一种 [加色模型](https://zh.wikipedia.org/wiki/%E5%8A%A0%E8%89%B2%E6%B3%95)，将红绿蓝三种色按不同的比例相加，可以产生不同的色彩。显示器就是用此原理显示绚丽的图案。
 
-![红绿蓝](https://baffinlee.duapp.com/20180328-rgb.png)
+![红绿蓝](../images/20180328-rgb.png)
 
 ## 在 CSS 中使用
 
@@ -263,7 +263,7 @@ function hex2rgb (hex) {
 
 HSL 即色相（hue），饱和度（saturation），以及亮度（lightness）。
 
-![hsl](https://baffinlee.duapp.com/20180328-hsl-1.png)
+![hsl](../images/20180328-hsl-hsv.png)
 
 色相，代表人眼所能感知的颜色范围。将这些颜色分布在圆上，用圆心角来选择颜色，比如：60° 是黄色，120° 是绿色。有些 hsl 取色器中不是用圆来表示色相，而是直线，也代表 0° ~ 360°。
 
@@ -273,7 +273,7 @@ HSL 即色相（hue），饱和度（saturation），以及亮度（lightness）
 
 下图是 windows 画图程序的取色器，色盘里左右代表色相，上下代表饱和度，最右边的滑条上下表示亮度。
 
-![hsl 取色器](https://baffinlee.duapp.com/20180328-hsl.png)
+![hsl 取色器](../images/20180328-hsl.png)
 
 
 ## 在 css 中使用
@@ -368,7 +368,7 @@ function hsl2hsv (h, s, l) {
 
 HSV 即色相（hue），饱和度（saturation），以及明度（brightness），也叫 HSB。
 
-![hsv](https://baffinlee.duapp.com/20180328-hsv.png)
+![hsv](../images/20180328-hsl-hsv.png)
 
 色相的意义与 HSL 的一致。
 
@@ -378,7 +378,7 @@ HSV 即色相（hue），饱和度（saturation），以及明度（brightness�
 
 下图是 PhotoShop 中的 HSV 取色器，色盘左右方向是明度变化，上下方向是饱和度变化，右边滑块上下是色相变化。
 
-![hsv 取色器](https://baffinlee.duapp.com/20180328-hsv-1.png)
+![hsv 取色器](../images/20180328-hsv.png)
 
 ## 转换
 
@@ -549,7 +549,7 @@ function hwb2hsv (h, w, b) {
 
 CMYK 印刷四分色模式是彩色印刷时采用的一种色彩模式，原理是三原色（青色、洋红色、黄色）与黑色四种颜色叠加， 是一种 [减色模型](https://zh.wikipedia.org/wiki/%E6%B8%9B%E8%89%B2%E6%B3%95)。CMYK 模式仅有 101^4 共 1030402 种色彩，RGB 有 256^3 共 16777216 种色彩。
 
-![](https://baffinlee.duapp.com/20180328-cmyk.png)
+![](../images/20180328-cmyk.png)
 
 ## 在 CSS 中使用
 
