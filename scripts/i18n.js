@@ -41,7 +41,7 @@ module.exports = class I18n {
     Object.keys(this.map).forEach(item => {
       if (this.map[item][str] === undefined) return;
       const value = this.translate(str, {}, item);
-      const lang = item.replace(/-_/g, '').toLowerCase();
+      const lang = item.replace(/[-_]/g, '').toLowerCase();
       attrs.push(`data-i18n-${lang}="${encodeForHtml(value)}"`)
     });
     return `<${tag} class="translatable" ${attrs.join(' ')}>${str}</${tag}>`

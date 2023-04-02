@@ -19,6 +19,26 @@
     s.setAttribute('data-timestamp', +new Date());
     (d.head || d.body).appendChild(s);
   };
+  var initI18n = function () {
+    var language = navigator.language || '';
+    var lang = language.replace(/[-_]/g, '').toLowerCase();
+    var langShort = language.toLowerCase().split(/[-_]/)[0] || '';
+    var camelCase = function (str) {
+      return (str[0] || '').toUpperCase() + str.slice(1);
+    };
+    var spans = document.getElementsByClassName('translatable');
+    for (var i = 0; i < spans.length; i++) {
+      var span = spans[i];
+      var keys = ['i18n' + camelCase(lang), 'i18n' + camelCase(langShort)];
+      for (var j = 0; j < keys.length; j++) {
+        var key = keys[j];
+        if (key in span.dataset) {
+          span.textContent = span.dataset[key];
+          break;
+        }
+      }
+    }
+  };
   var scrollHandler = function () {
     var top = document.body.scrollTop || document.documentElement.scrollTop;
 
@@ -58,6 +78,5 @@
     window.onscroll = scrollHandler;
   }
 
-  var a = document.querySelector('.markdown-body.post.page .title');
-  a && (a.textContent = '111');
+  initI18n();
 })();
