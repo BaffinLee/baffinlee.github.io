@@ -57,7 +57,7 @@ module.exports = class Theme {
       posts.length,
       size <= 0 ? posts.length : size,
       true,
-      `归档 - ${config.site.title}`
+      `${globalData.i18n.translate('Archive')} - ${config.site.title}`
     )
   }
 
@@ -71,7 +71,7 @@ module.exports = class Theme {
       series.length,
       size <= 0 ? series.length : size,
       false,
-      `系列 - ${config.site.title}`
+      `${globalData.i18n.translate('Series')} - ${config.site.title}`
     )
   }
 
@@ -104,7 +104,7 @@ module.exports = class Theme {
       tags.length,
       size <= 0 ? tags.length : size,
       false,
-      `标签 - ${config.site.title}`
+      `${globalData.i18n.translate('Tags')} - ${config.site.title}`
     )
   }
 
@@ -137,7 +137,7 @@ module.exports = class Theme {
       categories.length,
       size <= 0 ? categories.length : size,
       false,
-      `分类 - ${config.site.title}`
+      `${globalData.i18n.translate('Category')} - ${config.site.title}`
     )
   }
 

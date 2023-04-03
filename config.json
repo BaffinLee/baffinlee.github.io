@@ -9,6 +9,11 @@
     "logo": "img/logo.png",
     "slogan": "Happy Hacking."
   },
+  "i18n": {
+    "defaultLang": "en",
+    "alternateLangs": [],
+    "dynamic": true
+  },
   "theme": {
     "name": "default",
     "config": {

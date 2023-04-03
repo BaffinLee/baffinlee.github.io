@@ -193,6 +193,7 @@ a.link:hover {
 
 .post .meta a {
   color: #6a6a6a;
+  padding: 2px 5px;
 }
 
 .post .meta div {
@@ -210,6 +211,7 @@ a.link:hover {
 
 .post .meta a:hover {
   color: #333333;
+  background-color: #eee;
 }
 
 .post .read-more {

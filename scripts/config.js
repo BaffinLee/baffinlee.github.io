@@ -37,7 +37,11 @@ const config = {
     header: '',
     body: ''
   },
-  defaultLang: 'en',
+  i18n: {
+    defaultLang: 'en',
+    alternateLangs: [],
+    dynamic: false,
+  },
   theme: {
     name: 'default',
     config: {}

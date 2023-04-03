@@ -43,10 +43,10 @@ module.exports = class Meta {
     })
   }
 
-  getSlug (type, name) {
+  getItem (type, name) {
     const data = this.map[type][name]
     if (!data) throw new Error(`There has no ${name} ${type}`)
-    return data.slug
+    return data
   }
 
   completeConfig (config) {
@@ -55,19 +55,13 @@ module.exports = class Meta {
     let series = ''
 
     if (config.series && config.series.trim()) {
-      series = {
-        name: config.series.trim(),
-        slug: this.getSlug('series', config.series.trim())
-      }
+      series = this._plainObject(this.getItem('series', config.series.trim()))
     }
 
     if (config.categories && config.categories.length) {
       categories = config.categories.reduce((last, category) => {
         const str = category ? category.trim() : ''
-        if (str) last.push({
-          name: str,
-          slug: this.getSlug('categories', str)
-        })
+        if (str) last.push(this._plainObject(this.getItem('categories', str)))
         return last
       }, [])
     }
@@ -75,10 +69,7 @@ module.exports = class Meta {
     if (config.tags && config.tags.length) {
       tags = config.tags.reduce((last, tag) => {
         const str = tag ? tag.trim() : ''
-        if (str) last.push({
-          name: str,
-          slug: this.getSlug('tags', str)
-        })
+        if (str) last.push(this._plainObject(this.getItem('tags', str)))
         return last
       }, [])
     }
@@ -97,17 +88,11 @@ module.exports = class Meta {
 
     if (!target) throw new Error(`There has no ${category.name} category`)
 
-    res.unshift({
-      name: target.name,
-      slug: target.slug
-    })
+    res.unshift(this._plainObject(target))
 
     while (target.parent) {
       target = target.parent
-      res.unshift({
-        name: target.name,
-        slug: target.slug
-      })
+      res.unshift(this._plainObject(target))
     }
 
     return res;
@@ -130,5 +115,14 @@ module.exports = class Meta {
         this._walkCategoryChildren(item.children, cb, item)
       })
     }
+  }
+
+  _plainObject(obj) {
+    const res = {
+      ...obj
+    };
+    delete res.parent;
+    delete res.children;
+    return res;
   }
 }
