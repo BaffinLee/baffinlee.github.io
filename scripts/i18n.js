@@ -13,7 +13,7 @@ function normalizeLang(lang) {
 
 function getI18nNameLang(key) {
   const res = /^name([A-Z][a-zA-Z]+)?$/.exec(key);
-  return res && res[1].toLowerCase();
+  return res && res[1] && res[1].toLowerCase();
 }
 
 function convertI18nNameObjectToMap(i18nNameObject) {
@@ -22,6 +22,7 @@ function convertI18nNameObjectToMap(i18nNameObject) {
     if (lang) {
       map[normalizeLang(lang)] = i18nNameObject[key];
     }
+    return map;
   }, {});
 }
 
@@ -90,7 +91,9 @@ module.exports = class I18n {
     tag: '',
   }) {
     if (!config.i18n.dynamic) {
-      return encodeForHtml(this.translate(str, options));
+      return options.tag
+        ? `<${tag}>${encodeForHtml(this.translate(str, options))}</${tag}>`
+        : encodeForHtml(this.translate(str, options));
     }
     const tag = options.tag || 'span';
     const attrs = [];
@@ -99,9 +102,11 @@ module.exports = class I18n {
         ...options,
         language: item,
       });
-      if (value === str) return;
+      if (value === `${options.prefix || ''}${str}${options.suffix || ''}`) return;
       attrs.push(`data-i18n-${normalizeLang(item)}="${encodeForHtml(value)}"`);
     });
-    return `<${tag} class="translatable" ${attrs.join(' ')}>${encodeForHtml(this.translate(str, options))}</${tag}>`;
+    if (!options.tag && !attrs.length) return encodeForHtml(this.translate(str, options));
+    const attrsStr = attrs.length ? ` class="translatable" ${attrs.join(' ')}` : '';
+    return `<${tag}${attrsStr}>${encodeForHtml(this.translate(str, options))}</${tag}>`;
   }
 }

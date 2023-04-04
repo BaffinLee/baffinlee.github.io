@@ -3,7 +3,7 @@
     "name": "Baffin Lee",
     "title": "Baffin Lee's blog",
     "url": "https://baffinlee.com",
-    "description": "Baffin lee's blog，share tech insights",
+    "description": "Baffin lee's blog, share tech insights",
     "keywords": "Baffin lee, JavaScript, Frontend, NodeJS, Web3",
     "favicon": "img/favicon.ico",
     "logo": "img/logo.png",
@@ -11,7 +11,7 @@
   },
   "i18n": {
     "defaultLang": "en",
-    "alternateLangs": [],
+    "alternateLangs": ["zh"],
     "dynamic": true
   },
   "theme": {

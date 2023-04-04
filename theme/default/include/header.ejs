@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
   <meta name="description" content="<%= app.config.site.description %>">
   <meta name="keywords" content="<%= app.config.site.keywords %>">
-  <title><%= app.title %></title>
+  <%- app.title %>
   <link rel="shortcut icon" href="<%= app.url.static(app.config.site.favicon) %>" type="image/x-icon">
   <link rel="stylesheet" href="<%= app.url.static('css/app.css') %>">
   <%- app.config.inject.header -%>

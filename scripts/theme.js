@@ -5,6 +5,7 @@ const ejs = require('ejs')
 const moment = require('moment')
 const home = path.join(__dirname, '../')
 const config = require('./config')
+const { encodeForHtml } = require('./utils')
 const publicPath = path.join(home, config.output.public)
 const themeHome = path.join(home, 'theme', config.theme.name)
 const files = {
@@ -32,7 +33,7 @@ module.exports = class Theme {
     fs.writeFileSync(file, this.compilers.page({
       ...globalData,
       page,
-      title: `${page.title} - ${config.site.title}`
+      title: this.buildTitle(globalData, page.title)
     }))
   }
 
@@ -43,7 +44,7 @@ module.exports = class Theme {
     fs.writeFileSync(file, this.compilers.post({
       ...globalData,
       post,
-      title: `${post.title} - ${config.site.title}`
+      title: this.buildTitle(globalData, post.title)
     }))
   }
 
@@ -57,7 +58,7 @@ module.exports = class Theme {
       posts.length,
       size <= 0 ? posts.length : size,
       true,
-      `${globalData.i18n.translate('Archive')} - ${config.site.title}`
+      this.buildTitle(globalData, 'Archive', true),
     )
   }
 
@@ -71,7 +72,7 @@ module.exports = class Theme {
       series.length,
       size <= 0 ? series.length : size,
       false,
-      `${globalData.i18n.translate('Series')} - ${config.site.title}`
+      this.buildTitle(globalData, 'Series', true),
     )
   }
 
@@ -90,7 +91,7 @@ module.exports = class Theme {
       posts.length,
       size <= 0 ? posts.length : size,
       false,
-      `${series.name} - ${config.site.title}`
+      this.buildTitle(globalData, series.name),
     )
   }
 
@@ -104,7 +105,7 @@ module.exports = class Theme {
       tags.length,
       size <= 0 ? tags.length : size,
       false,
-      `${globalData.i18n.translate('Tags')} - ${config.site.title}`
+      this.buildTitle(globalData, 'Tags', true),
     )
   }
 
@@ -123,7 +124,7 @@ module.exports = class Theme {
       posts.length,
       size <= 0 ? posts.length : size,
       false,
-      `${tag.name} - ${config.site.title}`
+      this.buildTitle(globalData, tag.name),
     )
   }
 
@@ -137,7 +138,7 @@ module.exports = class Theme {
       categories.length,
       size <= 0 ? categories.length : size,
       false,
-      `${globalData.i18n.translate('Category')} - ${config.site.title}`
+      this.buildTitle(globalData, 'Category', true),
     )
   }
 
@@ -156,7 +157,7 @@ module.exports = class Theme {
       posts.length,
       size <= 0 ? posts.length : size,
       false,
-      `${category.name} - ${config.site.title}`
+      this.buildTitle(globalData, category.name),
     )
   }
 
@@ -170,7 +171,7 @@ module.exports = class Theme {
       posts.length,
       size <= 0 ? posts.length : size,
       false,
-      config.site.title
+      this.buildTitle(globalData),
     )
   }
 
@@ -250,5 +251,14 @@ module.exports = class Theme {
       res[year].push(item)
     })
     return res
+  }
+
+  buildTitle(globalData, str = '', needTranslate = false) {
+    if (!str) return `<title>${encodeForHtml(config.site.title)}</title>`;
+    if (!needTranslate) return `<title>${encodeForHtml(str)} - ${encodeForHtml(config.site.title)}</title>`;
+    return globalData.i18n.translatable(str, {
+      suffix: ` - ${config.site.title}`,
+      tag: 'title',
+    });
   }
 }

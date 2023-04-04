@@ -5,7 +5,7 @@ module.exports = {
       ['<', '&lt;'],
       ['>', '&gt;'],
       ['"', '&quot;'],
-      ['\'', '&x27;'],
+      ['\'', '&#39;'],
     ];
     return arr.reduce((prev, item) => prev.replace(new RegExp(item[0], 'g'), item[1]), str);
   },
