@@ -1,15 +1,8 @@
 <!--
 {
-  "id": "SJDD25ik7",
   "title": "一次性密码",
-  "slug": "one-timepassword",
-  "comments": true,
   "createdAt": "2018-05-30 11:37:03",
-  "publishedAt": "2018-05-30 11:37:03",
-  "updatedAt": "2018-05-30 11:37:03",
-  "categories": ["算法"],
-  "tags": [],
-  "series": ""
+  "categories": ["算法"]
 }
 -->
 

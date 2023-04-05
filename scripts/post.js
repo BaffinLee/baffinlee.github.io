@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const crypto = require('crypto')
 const showdown  = require('showdown')
 const hljs = require('highlight.js')
@@ -82,62 +83,66 @@ const renderer = new showdown.Converter({
 
 module.exports = class Post {
   reset () {
-    this.raw = null
-    this.excerpt = null
-    this.html = null
     this.config = null
-    this.hash = null
   }
 
   load (filePath) {
+    const raw = fs.readFileSync(filePath, 'utf-8')
     this.reset()
-    this.raw = fs.readFileSync(filePath, 'utf-8')
+    this.config = this.getConfig(filePath, raw)
   }
 
-  getExcerpt () {
-    let right = null
-    let str = ''
-    if (!this.excerpt) {
-      right = /<!--\s*more\s*-->/i.exec(this.raw)
-      if (right) {
-        str = this.raw.substring(0, right.index)
-        this.excerpt = renderer.makeHtml(str).trim()
-      } else {
-        this.excerpt = ''
-      }
+  getLang (filePath) {
+    return [config.i18n.defaultLang].concat(config.i18n.alternateLangs).find(lang => {
+      return filePath.endsWith(`.${lang}.md`);
+    }) || config.i18n.defaultLang
+  }
+
+  getExcerpt (raw) {
+    const right = /<!--\s*more\s*-->/i.exec(raw)
+    if (right) {
+      const str = raw.substring(0, right.index)
+      return renderer.makeHtml(str).trim()
     }
-    return this.excerpt
+    return ''
   }
 
-  getHtml () {
-    if (!this.html) this.html = renderer.makeHtml(this.raw).trim()
-    return this.html
+  getHtml (raw) {
+    return renderer.makeHtml(raw).trim()
   }
 
-  getConfig () {
-    let left = null
-    let right = null
-    let str = ''
-    if (!this.config) {
-      left = /<!--\s*\{/.exec(this.raw)
-      right = /\}\s*-->/.exec(this.raw)
-      if (left && right) {
-        str = this.raw.substring(left.index + left[0].length, right.index)
-        this.config = JSON.parse(`{${str}}`)
-      } else {
-        this.config = {}
-      }
+  getConfig (filePath, raw) {
+    if (this.config) return this.config;
+    const left = /<!--\s*\{/.exec(raw)
+    const right = /\}\s*-->/.exec(raw)
+    let config = {};
+    if (left && right) {
+      const str = raw.substring(left.index + left[0].length, right.index)
+      config = JSON.parse(`{${str}}`)
+    } else {
+      config = {}
+    }
+    const fileName = path.basename(filePath)
+    this.config = {
+      ...config,
+      updatedAt: config.updatedAt || config.createdAt,
+      file: fileName,
+      slug: config.slug || this.getSlug(fileName),
+      lang: this.getLang(filePath),
+      hash: this.getHash(raw),
+      excerpt: this.getExcerpt(raw),
+      html: this.getHtml(raw)
     }
     return this.config
   }
 
-  getHash () {
-    let hash = null
-    if (!this.hash) {
-      hash = crypto.createHash('sha1')
-      hash.update(this.raw)
-      this.hash = hash.digest('hex')
-    }
-    return this.hash
+  getSlug (filePath) {
+    return encodeURIComponent((filePath.split('.')[0] || '').replace(/^\d{8}-/, ''))
+  }
+
+  getHash (raw) {
+    const hash = crypto.createHash('sha1')
+    hash.update(raw)
+    return hash.digest('hex')
   }
 }

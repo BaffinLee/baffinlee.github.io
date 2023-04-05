@@ -99,7 +99,7 @@ module.exports = class Meta {
   }
 
   checkConfig (config) {
-    if (!config || !config.id || !config.title || !config.slug || !config.publishedAt) {
+    if (!config || !config.title || !config.slug || !config.createdAt) {
       throw new Error('file meta info is incomplete!')
     }
   }

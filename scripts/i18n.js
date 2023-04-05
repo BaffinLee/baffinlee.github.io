@@ -1,14 +1,11 @@
 const path = require('path')
 const fs = require('fs')
 const config = require('./config')
-const { encodeForHtml } = require('./utils');
+const url = require('./url')
+const { encodeForHtml, normalizeLang } = require('./utils');
 
 function testLang(str) {
   return /^[a-z]+([-_][a-z]+)?$/i.test(str);
-}
-
-function normalizeLang(lang) {
-  return lang.replace(/[-_]/g, '').toLowerCase();
 }
 
 function getI18nNameLang(key) {
@@ -40,7 +37,7 @@ function matchLang(lang, i18nMap) {
 
 module.exports = class I18n {
   constructor() {
-    this.language = config.i18n.defaultLang || 'en';
+    this.language = config.i18n.defaultLang;
     this.themeI18nMap = {};
 
     const i18nPath = path.resolve(__dirname, '../theme', config.theme.name, 'i18n');
@@ -108,5 +105,31 @@ module.exports = class I18n {
     if (!options.tag && !attrs.length) return encodeForHtml(this.translate(str, options));
     const attrsStr = attrs.length ? ` class="translatable" ${attrs.join(' ')}` : '';
     return `<${tag}${attrsStr}>${encodeForHtml(this.translate(str, options))}</${tag}>`;
+  }
+
+  translatePostTitle(post) {
+    if (!post.i18nList || !post.i18nList.length || !config.i18n.dynamic) return encodeForHtml(post.title);
+    const attrs = post.i18nList.map(item => {
+      return `data-i18n-${normalizeLang(item.lang)}="${encodeForHtml(item.title)}"`;
+    });
+    return `<span class="translatable" ${attrs.join(' ')}>${encodeForHtml(post.title)}</span>`;
+  }
+
+  translatePostExcerpt(post) {
+    if (!post.i18nList || !post.i18nList.length || !config.i18n.dynamic) {
+      return `<div class="markdown-body">${post.excerpt}</div>`;
+    }
+    const attrs = post.i18nList.map(item => {
+      return `data-i18n-${normalizeLang(item.lang)}="${encodeForHtml(item.excerpt)}"`;
+    });
+    return `<div class="markdown-body translatable translatable-html" ${attrs.join(' ')}>${post.excerpt}</span>`;
+  }
+
+  getPostLinkAttr(post) {
+    if (!post.i18nList || !post.i18nList.length || !config.i18n.dynamic) return '';
+    return post.i18nList.map(item => {
+      const link = url.post(item);
+      return `data-i18n-${normalizeLang(item.lang)}="${encodeForHtml(link)}"`;
+    }).join(' ')
   }
 }

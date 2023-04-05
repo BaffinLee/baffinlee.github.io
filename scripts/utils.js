@@ -16,4 +16,7 @@ module.exports = {
       return defaultValue;
     }
   },
+  normalizeLang(lang) {
+    return lang.replace(/[-_]/g, '').toLowerCase();
+  },
 }

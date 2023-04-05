@@ -3,8 +3,8 @@
       <% Object.entries(app.list).forEach(([year, list]) => { %><h2><%= year %></h2>
       <ul>
         <% list.forEach(post => { %><li>
-          <span class="date"><%= app.moment(post.publishedAt).format('MM-DD') %></span>
-          <a href="<%= app.url.post(post) %>"><%= post.title %></a>
+          <span class="date"><%= app.moment(post.createdAt).format('MM-DD') %></span>
+          <a class="translatable-link" href="<%= app.url.post(post) %>" <%- app.i18n.getPostLinkAttr(post) %>><%- app.i18n.translatePostTitle(post) %></a>
         </li><% }) %>
       </ul><% }) %>
     </div>

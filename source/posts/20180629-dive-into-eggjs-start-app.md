@@ -1,12 +1,7 @@
 <!--
 {
-  "id": "SyUQ3umfQ",
   "title": "深入 Egg.js：项目启动流程",
-  "slug": "dive-into-eggjs-start-app",
-  "comments": true,
   "createdAt": "2018-06-29 17:30:05",
-  "publishedAt": "2018-06-29 17:30:05",
-  "updatedAt": "2018-06-29 17:30:05",
   "categories": ["nodejs"],
   "tags": ["eggjs"],
   "series": "深入 Egg.js"

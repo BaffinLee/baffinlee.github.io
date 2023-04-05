@@ -1,12 +1,12 @@
 <!--
 {
-  "title": "短 ID 生成器",
+  "title": "short ID gen",
   "createdAt": "2018-04-18 11:20:37",
   "categories": ["算法"]
 }
 -->
 
-最近研究了一下 URL 短链的生成，其中有个重要的部分是生成唯一的、不可预测的、尽量短的、url 友好的 id。我搜索了一下，看到有一个 JavaScript 库可以做到：[shortid](https://github.com/dylang/shortid) 。看完源代码后，决定写篇文章分析一下短 id 生成中要注意的东西，以及其间利弊。
+1111
 
 <!-- more -->
 

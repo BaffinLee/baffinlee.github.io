@@ -52,12 +52,42 @@ function readdir (dir, files = []) {
 }
 
 function publishPosts (folder, isPage) {
-  spinner.start(`Publishing ${isPage ? 'pages' : 'posts'}`)
-  const files = readdir(folder).filter(file => /\.md$/i.test(file))
+  const type = isPage ? 'pages' : 'posts';
+  spinner.start(`Publishing ${type}`)
+  let files = readdir(folder).filter(file => /\.md$/i.test(file));
+  if (blogConfig.i18n.dynamic) {
+    files.sort((a, b) => {
+      if (a === b) return 0;
+      const resA = /(.*?)(\.[a-z\-_]+)?\.md/i.exec(a);
+      const resB = /(.*?)(\.[a-z\-_]+)?\.md/i.exec(b);
+      const nameA = resA[1];
+      const nameB = resB[1];
+      if (nameA !== nameB) return nameA > nameB ? 1 : -1;
+      const langA = resA[2] ? resA[2].slice(1) : i18n.language;
+      const langB = resB[2] ? resB[2].slice(1) : i18n.language;
+      if (langA !== i18n.language && langB !== i18n.language) return langA > langB ? 1 : -1;
+      return langA === i18n.language ? -1 : 1;
+    });
+  } else {
+    const map = files.reduce((m, item) => {
+      m[item] = true;
+      return m;
+    }, {});
+    files = files.filter(file => {
+      const res = /(.*?)(\.[a-z\-_]+)?\.md/i.exec(file);
+      const lang = res[2] ? res[2].slice(1) : '';
+      if (lang) {
+        return lang === i18n.language;
+      } else {
+        return !map[`${res[1]}.${i18n.language}.md`];
+      }
+    });
+  }
   const len = files.length
+  let num = 0
   for (let i = 0; i < len; i++) {
     try {
-      publishPost(files[i], isPage)
+      num += publishPost(files[i], isPage) ? 1 : 0
     } catch (err) {
       console.log()
       console.log()
@@ -66,42 +96,37 @@ function publishPosts (folder, isPage) {
       throw new Error(`File -> ${files[i]}. Note -> ${err.message}`)
     }
   }
-  spinner.succeed(`Publishing ${isPage ? 'pages' : 'posts'}`)
+  spinner.succeed(`Publishing ${type}, ${num || 'no'} ${type} changed/created`)
 }
 
 function publishPost (file, isPage) {
   let postConfig = null
-  let hash = ''
   let info = null
   let content = ''
 
-  post.reset()
   post.load(file)
 
   postConfig = post.getConfig()
-  hash = post.getHash()
-  info = cache.getPost(postConfig.id)
+  info = cache.getPost(postConfig.file)
 
   meta.checkConfig(postConfig)
 
-  if (!info || info.hash !== hash) {
+  if (!info || info.hash !== postConfig.hash) {
     if (!isPage) {
       postConfig = meta.completeConfig(postConfig)
-      postConfig.excerpt = post.getExcerpt()
       postConfig.url = urlBuilder.post(postConfig)
     } else {
       postConfig.url = urlBuilder.page(postConfig.slug)
     }
 
-    postConfig.hash = hash
+    content = postConfig.html;
+    delete postConfig.html;
 
     if (!info) {
       isPage ? cache.addPage(postConfig) : cache.addPost(postConfig)
     } else {
       cache.updatePost(postConfig)
     }
-
-    content = post.getHtml()
 
     if (isPage) {
       theme.compilePage({ ...postConfig, content}, globalData)
@@ -126,7 +151,11 @@ function publishPost (file, isPage) {
     if (postConfig.series) {
       changed.series[postConfig.series.slug] = { ...(postConfig.series) }
     }
+
+    return true;
   }
+
+  return false;
 }
 
 function publishHome () {
@@ -184,7 +213,7 @@ function publishRss () {
       url: `${blogConfig.site.url}${post.url}`,
       description: post.excerpt,
       categories: post.categories.map(category => category.name),
-      date: post.publishedAt
+      date: post.createdAt
     })
   })
   fs.writeFileSync(`${dir}/rss.xml`, rss.xml({ indent: '  ' }) + '\n')
@@ -202,6 +231,7 @@ function copyStaticFiles () {
 }
 
 function publish () {
+  theme.prepareOutputPath();
   copyStaticFiles()
   theme.copyStaticFiles()
   publishPosts(pagesPath, true)

@@ -3,8 +3,8 @@
       <h2><%= app.series.name %><span> - <%- app.i18n.translatable('Series') %></span></h2>
       <ul>
         <% app.list.forEach(post => { %><li>
-          <span class="date"><%= app.moment(post.publishedAt).format('YYYY-MM-DD') %></span>
-          <a href="<%= app.url.post(post) %>"><%= post.title %></a>
+          <span class="date"><%= app.moment(post.createdAt).format('YYYY-MM-DD') %></span>
+          <a class="translatable-link" href="<%= app.url.post(post) %>" <%- app.i18n.getPostLinkAttr(post) %>><%- app.i18n.translatePostTitle(post) %></a>
         </li><% }) %>
       </ul>
     </div>

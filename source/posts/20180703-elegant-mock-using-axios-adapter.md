@@ -1,15 +1,9 @@
 <!--
 {
-  "id": "r1bZ8cdMQ",
   "title": "使用 axios 的 adapter 优雅地 mock 数据",
-  "slug": "elegant-mock-using-axios-adapter",
-  "comments": true,
   "createdAt": "2018-07-03 14:21:45",
-  "publishedAt": "2018-07-03 14:21:45",
-  "updatedAt": "2018-07-03 14:21:45",
   "categories": ["前端"],
-  "tags": ["js"],
-  "series": ""
+  "tags": ["js"]
 }
 -->
 

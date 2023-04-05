@@ -1,5 +1,4 @@
 const path = require('path')
-const moment = require('moment')
 const crypto = require('crypto')
 const fs = require('fs')
 const config = require('./config')
@@ -11,13 +10,13 @@ module.exports = {
     return (page > 1) ? `/${config.output.page}/${page}.html` : '/'
   },
   archives (page = 0) {
-    return this.for('archives', '', page)
+    return this.for('archive', '', page)
   },
   categories (slug, page = 0) {
-    return this.for('categories', slug, page)
+    return this.for('category', slug, page)
   },
   tags (slug, page = 0) {
-    return this.for('tags', slug, page)
+    return this.for('tag', slug, page)
   },
   series (slug, page = 0) {
     return this.for('series', slug, page)
@@ -41,8 +40,7 @@ module.exports = {
     return '/rss.xml'
   },
   post (post) {
-    const date = moment(post.publishedAt).format('YYYYMMDD')
-    return `/${config.output.posts}/${date}-${post.slug}.html`
+    return `/${config.output.post}/${post.slug}.html`
   },
   page (slug) {
     return `/${slug}.html`

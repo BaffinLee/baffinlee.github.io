@@ -1,6 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-const shortid = require('shortid')
 const moment = require('moment')
 const chalk = require('chalk')
 const type = process.argv[2] === 'page' ? 'page' : 'post'
@@ -8,13 +7,8 @@ const now = moment()
 const date = now.format('YYYYMMDD')
 const time = now.format('YYYY-MM-DD HH:mm:ss')
 const postConfig = {
-  id: shortid.generate(),
   title: `new ${type}`,
-  slug: `new-${type}`,
-  comments: type === 'post',
-  createdAt: time,
-  publishedAt: time,
-  updatedAt: time
+  createdAt: time
 }
 let content = ''
 let file = ''
@@ -31,7 +25,6 @@ if (type === 'page') {
 } else {
   postConfig.categories = []
   postConfig.tags = []
-  postConfig.series = ''
   content = '<!--'
           + '\n'
           + JSON.stringify(postConfig, null, 2)

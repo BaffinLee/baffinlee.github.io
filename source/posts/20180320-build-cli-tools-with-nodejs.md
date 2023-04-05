@@ -1,15 +1,9 @@
 <!--
 {
-  "id": "rk1qwPTtG",
   "title": "打造nodejs命令行工具",
-  "slug": "build-cli-tools-with-nodejs",
-  "comments": true,
   "createdAt": "2018-03-20 00:38:31",
-  "publishedAt": "2018-03-20 00:38:31",
-  "updatedAt": "2018-03-20 00:38:31",
   "categories": ["nodejs"],
-  "tags": ["js", "nodejs", "cli", "tool"],
-  "series": ""
+  "tags": ["js", "nodejs", "cli", "tool"]
 }
 -->
 

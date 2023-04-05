@@ -1,15 +1,9 @@
 <!--
 {
-  "id": "B1xXLs_qG",
   "title": "各种颜色类型及之间的转换",
-  "slug": "color-spaces-and-conversions",
-  "comments": true,
   "createdAt": "2018-03-28 13:20:24",
-  "publishedAt": "2018-03-28 13:20:24",
-  "updatedAt": "2018-03-28 13:20:24",
   "categories": ["设计"],
-  "tags": ["颜色"],
-  "series": ""
+  "tags": ["颜色"]
 }
 -->
 

@@ -1,7 +1,7 @@
     <div class="meta">
       <div>
         <i class="iconfont icon-date"></i>
-        <span><%= app.moment(app.post.publishedAt).format('YYYY-MM-DD') %></span>
+        <span><%= app.moment(app.post.createdAt).format('YYYY-MM-DD') %></span>
       </div>
       <% if (app.post.categories.length) { %><div>
         <i class="iconfont icon-folder"></i>

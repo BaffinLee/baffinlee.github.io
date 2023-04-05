@@ -2,4 +2,9 @@
     <article class="markdown-body">
       <%- app.page.content -%>
     </article>
+    <% if (app.page.comment === true && app.config.theme.config.disqusShortName) { %>
+      <div id="disqus_thread" class="disqus-comment" data-shortname="<%= app.config.theme.config.disqusShortName %>">
+        <%- app.i18n.translatable('Comment loading') %>
+      </div>
+    <% } %>
 <%- include('include/footer') -%>

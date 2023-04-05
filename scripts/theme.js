@@ -2,7 +2,6 @@ const fse = require('fs-extra')
 const fs = require('fs')
 const path = require('path')
 const ejs = require('ejs')
-const moment = require('moment')
 const home = path.join(__dirname, '../')
 const config = require('./config')
 const { encodeForHtml } = require('./utils')
@@ -23,7 +22,6 @@ const files = {
 
 module.exports = class Theme {
   constructor () {
-    this.prepareOutputPath()
     this.prepareCompilers()
   }
 
@@ -38,8 +36,7 @@ module.exports = class Theme {
   }
 
   compilePost (post, globalData) {
-    const date = moment(post.publishedAt).format('YYYYMMDD')
-    const name = `${date}-${post.slug}.html`
+    const name = `${post.slug}.html`
     const file = path.join(this.paths.posts, name)
     fs.writeFileSync(file, this.compilers.post({
       ...globalData,
@@ -217,11 +214,11 @@ module.exports = class Theme {
     this.paths = {
       home: publicPath,
       static: path.join(publicPath, config.output.static),
-      archives: path.join(publicPath, config.output.archives),
-      categories: path.join(publicPath, config.output.categories),
-      posts: path.join(publicPath, config.output.posts),
+      archives: path.join(publicPath, config.output.archive),
+      categories: path.join(publicPath, config.output.category),
+      posts: path.join(publicPath, config.output.post),
       series: path.join(publicPath, config.output.series),
-      tags: path.join(publicPath, config.output.tags)
+      tags: path.join(publicPath, config.output.tag)
     }
     for (const key in this.paths) {
       fse.ensureDirSync(this.paths[key])
@@ -246,7 +243,7 @@ module.exports = class Theme {
   genArchiveData (data) {
     const res = {}
     data.forEach(item => {
-      const year = (new Date(item.publishedAt)).getFullYear()
+      const year = (new Date(item.createdAt)).getFullYear()
       if (!res[year]) res[year] = []
       res[year].push(item)
     })

@@ -14,12 +14,11 @@ const config = {
 	output: {
 		public: 'public',
 		static: 'static',
-		posts: 'posts',
-    tags: 'tags',
-    authors: 'authors',
-		categories: 'categories',
+		post: 'post',
+    tag: 'tag',
+		category: 'category',
 		series: 'series',
-    archives: 'archives',
+    archive: 'archive',
     page: 'page'
 	},
 	pageSize: {

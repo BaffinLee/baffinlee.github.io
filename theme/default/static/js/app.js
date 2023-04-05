@@ -6,13 +6,13 @@
   var menuOpened = false;
   var menuDom = document.getElementById('menu');
   var menuBtnDom = document.getElementById('mobile-menu');
-  var initDisqus = function (url, id, shortname) {
+  var initDisqus = function (shortname) {
     var d = document;
     var s = d.createElement('script');
 
     window.disqus_config = function () {
-      this.page.url = url;
-      this.page.identifier = id;
+      this.page.url = location.pathname;
+      this.page.identifier = location.pathname;
     };
 
     s.src = 'https://' + shortname + '.disqus.com/embed.js';
@@ -33,7 +33,23 @@
       for (var j = 0; j < keys.length; j++) {
         var key = keys[j];
         if (key in span.dataset) {
-          span.textContent = span.dataset[key];
+          if (span.classList.contains('translatable-html')) {
+            span.innerHTML = span.dataset[key];
+          } else {
+            span.textContent = span.dataset[key];
+          }
+          break;
+        }
+      }
+    }
+    var links = document.getElementsByClassName('translatable-link');
+    for (var i = 0; i < links.length; i++) {
+      var link = links[i];
+      var keys = ['i18n' + camelCase(lang), 'i18n' + camelCase(langShort)];
+      for (var j = 0; j < keys.length; j++) {
+        var key = keys[j];
+        if (key in link.dataset) {
+          link.href = link.dataset[key];
           break;
         }
       }
@@ -56,7 +72,7 @@
       !disqusInited &&
       (document.body.clientHeight - window.innerHeight - top < 50)) {
       disqusInited = true;
-      initDisqus(disqusDom.dataset.url, disqusDom.dataset.id, disqusDom.dataset.shortname);
+      initDisqus(disqusDom.dataset.shortname);
     }
   };
   var openMenu = function () {
