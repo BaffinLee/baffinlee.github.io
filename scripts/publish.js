@@ -15,7 +15,7 @@ const I18n = require('./i18n')
 
 const post = new Post()
 const meta = new Meta()
-const cache = new Cache(meta)
+let cache = new Cache(meta)
 const theme = new Theme()
 const i18n = new I18n()
 const pagesPath = path.join(__dirname, '../source/pages')
@@ -28,7 +28,7 @@ const globalData = {
   i18n,
   moment
 }
-const changed = {
+let changed = {
   tags: {},
   series: {},
   categories: {}
@@ -231,6 +231,7 @@ function copyStaticFiles () {
 }
 
 function publish () {
+  !blogConfig.i18n.dynamic && spinner.succeed(`Publishing ${blogConfig.i18n.defaultLang}`);
   theme.prepareOutputPath();
   copyStaticFiles()
   theme.copyStaticFiles()
@@ -246,7 +247,28 @@ function publish () {
 }
 
 try {
-  publish()
+  if (blogConfig.i18n.dynamic) {
+    publish()
+  } else {
+    const defaultLang = blogConfig.i18n.defaultLang;
+    const publicPath = blogConfig.output.public;
+    const languages = [blogConfig.i18n.defaultLang, ...blogConfig.i18n.alternateLangs]
+    languages.forEach(lang => {
+      blogConfig.i18n.defaultLang = lang;
+      blogConfig.i18n.alternateLangs = [...languages].splice(
+        languages.indexOf(lang),
+        1
+      );
+      blogConfig.output.public = lang === defaultLang ? publicPath : `${publicPath}/${lang}`
+      cache = new Cache(meta);
+      changed = {
+        tags: {},
+        series: {},
+        categories: {}
+      };
+      publish();
+    })
+  }
   cache.sync()
   spinner.succeed('all done!')
   console.log()

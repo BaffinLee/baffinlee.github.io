@@ -5,7 +5,6 @@ const ejs = require('ejs')
 const home = path.join(__dirname, '../')
 const config = require('./config')
 const { encodeForHtml } = require('./utils')
-const publicPath = path.join(home, config.output.public)
 const themeHome = path.join(home, 'theme', config.theme.name)
 const files = {
   archives: 'archives.ejs',
@@ -27,7 +26,7 @@ module.exports = class Theme {
 
   compilePage (page, globalData) {
     const name = `${page.slug}.html`
-    const file = path.join(this.paths.home, name)
+    const file = path.join(this.paths.pages, name)
     fs.writeFileSync(file, this.compilers.page({
       ...globalData,
       page,
@@ -178,7 +177,7 @@ module.exports = class Theme {
   }
 
   paging (compiler, dir, data, globalData, count, size, isArchive, title) {
-    const pagePath = path.join(dir, config.output.page)
+    const pagePath = path.join(dir, config.output.paging)
     const pageCount = Math.ceil(count / size)
     let now = 0
     let page = 1
@@ -211,12 +210,14 @@ module.exports = class Theme {
   }
 
   prepareOutputPath () {
+    const publicPath = path.join(home, config.output.public)
     this.paths = {
       home: publicPath,
       static: path.join(publicPath, config.output.static),
       archives: path.join(publicPath, config.output.archive),
       categories: path.join(publicPath, config.output.category),
       posts: path.join(publicPath, config.output.post),
+      pages: path.join(publicPath, config.output.page),
       series: path.join(publicPath, config.output.series),
       tags: path.join(publicPath, config.output.tag)
     }

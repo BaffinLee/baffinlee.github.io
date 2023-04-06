@@ -1,5 +1,5 @@
-const path = require('path')
-const fse = require('fs-extra')
+// const path = require('path')
+// const fse = require('fs-extra')
 const { normalizeLang } = require('./utils');
 // const cacheDir = path.join(__dirname, '../.cache')
 // const cacheFile = path.join(__dirname, '../.cache/cache.json')

@@ -89,7 +89,7 @@ module.exports = class I18n {
   }) {
     if (!config.i18n.dynamic) {
       return options.tag
-        ? `<${tag}>${encodeForHtml(this.translate(str, options))}</${tag}>`
+        ? `<${options.tag}>${encodeForHtml(this.translate(str, options))}</${options.tag}>`
         : encodeForHtml(this.translate(str, options));
     }
     const tag = options.tag || 'span';

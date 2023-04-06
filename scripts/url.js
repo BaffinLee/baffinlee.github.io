@@ -43,6 +43,6 @@ module.exports = {
     return `/${config.output.post}/${post.slug}.html`
   },
   page (slug) {
-    return `/${slug}.html`
+    return `/${config.output.page}/${slug}.html`
   }
 }

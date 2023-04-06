@@ -12,7 +12,7 @@
   "i18n": {
     "defaultLang": "en",
     "alternateLangs": ["zh"],
-    "dynamic": true
+    "dynamic": false
   },
   "theme": {
     "name": "default",

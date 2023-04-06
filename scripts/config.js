@@ -19,6 +19,7 @@ const config = {
 		category: 'category',
 		series: 'series',
     archive: 'archive',
+    paging: 'page',
     page: 'page'
 	},
 	pageSize: {
