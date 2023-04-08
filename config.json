@@ -12,11 +12,12 @@
   "i18n": {
     "defaultLang": "en",
     "alternateLangs": ["zh"],
-    "dynamic": false
+    "dynamic": true
   },
   "theme": {
     "name": "default",
     "config": {
+      "editOnGithub": "https://github.com/BaffinLee/baffinlee.github.io/tree/master",
       "github": "https://github.com/baffinlee",
       "disqusShortName": "https-baffinlee-com",
       "gaId": "UA-115892357-1"

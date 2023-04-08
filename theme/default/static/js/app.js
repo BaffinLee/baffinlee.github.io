@@ -6,12 +6,12 @@
   var menuOpened = false;
   var menuDom = document.getElementById('menu');
   var menuBtnDom = document.getElementById('mobile-menu');
-  var initDisqus = function (shortname) {
+  var initDisqus = function (shortname, url) {
     var d = document;
     var s = d.createElement('script');
 
     window.disqus_config = function () {
-      this.page.url = location.pathname;
+      this.page.url = url;
       this.page.identifier = location.pathname;
     };
 
@@ -72,7 +72,7 @@
       !disqusInited &&
       (document.body.clientHeight - window.innerHeight - top < 50)) {
       disqusInited = true;
-      initDisqus(disqusDom.dataset.shortname);
+      initDisqus(disqusDom.dataset.shortname, disqusDom.dataset.url);
     }
   };
   var openMenu = function () {

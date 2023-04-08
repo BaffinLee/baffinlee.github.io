@@ -127,6 +127,7 @@ module.exports = class Post {
       ...config,
       updatedAt: config.updatedAt || config.createdAt,
       file: fileName,
+      filePath: filePath.replace(path.resolve(__dirname, '../'), '').replace(new RegExp(`\\${path.sep}`, 'g'), '/'),
       slug: config.slug || this.getSlug(fileName),
       lang: this.getLang(filePath),
       hash: this.getHash(raw),

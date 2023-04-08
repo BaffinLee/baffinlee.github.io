@@ -163,7 +163,7 @@ a.link:hover {
 
 .post.page {
   margin-top: 50px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 
 .post .title {
@@ -173,6 +173,17 @@ a.link:hover {
   font-size: 30px;
   line-height: 40px;
   font-weight: normal;
+}
+
+.post.page .title {
+  font-size: 36px;
+}
+
+.edit-on-github {
+  background-color: #eee;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 30px;
 }
 
 .post .meta {

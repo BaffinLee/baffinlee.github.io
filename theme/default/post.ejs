@@ -4,8 +4,21 @@
       <%- include('include/meta') -%>
       <%- app.post.content -%>
     </article>
+    <% if (app.config.theme.config.editOnGithub) { %>
+      <div class="edit-on-github">
+        <%-
+          app.post.updatedAt && app.moment().diff(app.moment(app.post.updatedAt), 'days') >= 100
+            ? app.i18n.translatable('This post was published ${days} days ago, some content may be inaccurate.', {
+                replacer: { days: app.moment().diff(app.moment(app.post.updatedAt), 'days') } }
+              )
+            : app.i18n.translatable('This post was published recently.')
+        %>
+        <%- app.i18n.translatable('Edit it on ') %>
+        <a href="<%= app.config.theme.config.editOnGithub + app.post.filePath %>" target="_blank"><%- app.i18n.translatable('GitHub') %></a>
+      </div>
+    <% } %>
     <% if (app.post.comment !== false && app.config.theme.config.disqusShortName) { %>
-    <div id="disqus_thread" class="disqus-comment" data-shortname="<%= app.config.theme.config.disqusShortName %>">
+    <div id="disqus_thread" class="disqus-comment" data-url="<%= app.config.site.url + app.post.url %>" data-shortname="<%= app.config.theme.config.disqusShortName %>">
       <%- app.i18n.translatable('Comment loading') %>
     </div>
     <% } %>

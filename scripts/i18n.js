@@ -66,13 +66,9 @@ module.exports = class I18n {
     const language = matchLang(options.language || this.language, i18nMap);
     const applyExtraText = (t) => `${options.prefix || ''}${t}${options.suffix || ''}`;
 
-    if (!language || i18nMap[language] === undefined) {
-      return applyExtraText(str);
-    }
-
-    if (options.i18nNameObject) return applyExtraText(i18nMap[language]);
-
-    const value = this.themeI18nMap[language][str];
+    const value = options.i18nNameObject
+      ? (!language || i18nMap[language] === undefined ? str : i18nMap[language])
+      : (!language || i18nMap[language] === undefined || i18nMap[language][str] === undefined ? str : i18nMap[language][str])
     const text = `${value}`.replace(/\${(.+?)}/g, (match, $1) => {
       return replacer[$1] !== undefined ? replacer[$1] : match;
     });
