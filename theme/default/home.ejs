@@ -3,7 +3,7 @@
       <a class="link title translatable-link" href="<%= app.url.post(post) %>" <%- app.i18n.getPostLinkAttr(post) %>><%- app.i18n.translatePostTitle(post) %></a>
       <%- include('include/meta', { post }) -%>
       <%- app.i18n.translatePostExcerpt(post) %>
-      <a class="read-more link translatable-link" href="<%= app.url.post(post) %>" <%- app.i18n.getPostLinkAttr(post) %>><%- app.i18n.translatable('More') %>&gt;&gt;</a>
+      <a class="read-more link translatable-link" href="<%= app.url.post(post) %>" <%- app.i18n.getPostLinkAttr(post) %>><%- app.i18n.translatable('Read more') %>&gt;&gt;</a>
     </article><% }) %>
     <%- include('include/paging', {
       pagingUrl (page = 0) {
